@@ -18,7 +18,7 @@ body {
 .container {
 	position: relative;
 	width: 100%;
-	max-width: 960px;
+	max-width: 1000px;
 	margin: 0 auto;
 	padding: 0 20px;
 	box-sizing: border-box;
@@ -32,7 +32,7 @@ body {
 /* For devices larger than 400px */
 @media (min-width: 400px) {
 .container {
-	width: 85%;
+	width: 100% !important;
 	padding: 0;
 }
 }
@@ -475,7 +475,7 @@ opacity: 0;
 .rdmrbt{
 	margin-top: 20px;
 	font-size: medium;
-	background-color: #f38dc8;
+	background-color: #945078;
 	border: none;
 	border-radius: 20px;
 	color: white;
