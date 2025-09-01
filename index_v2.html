@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smooth Glassmorphism Grid Background</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: white;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .grid-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-rows: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0;
+            padding: 0;
+        }
+
+        .grid-item {
+            background: transparent;
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 0;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1), 
+                        background 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grid-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                rgba(255, 255, 255, 0.1) 0%,
+                rgba(255, 255, 255, 0.05) 50%,
+                rgba(255, 255, 255, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .grid-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border: none;
+            transform: none;
+            box-shadow: none;
+            transition: all 0.08s cubic-bezier(0.4, 0, 0.2, 1), 
+                        background 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .grid-item:hover::before {
+            opacity: 1;
+            transition: opacity 0.08s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Six different hover colors for variety - glassy and smooth */
+        .grid-item:nth-child(6n+1):hover {
+            background: rgba(102, 126, 234, 0.18);
+        }
+
+        .grid-item:nth-child(6n+2):hover {
+            background: rgba(240, 147, 251, 0.18);
+        }
+
+        .grid-item:nth-child(6n+3):hover {
+            background: rgba(79, 172, 254, 0.18);
+        }
+
+        .grid-item:nth-child(6n+4):hover {
+            background: rgba(245, 87, 108, 0.18);
+        }
+
+        /* New glassy colors */
+        .grid-item:nth-child(6n+5):hover {
+            background: rgba(34, 197, 94, 0.18); /* Glassy emerald */
+        }
+
+        .grid-item:nth-child(6n):hover {
+            background: rgba(251, 146, 60, 0.18); /* Glassy amber */
+        }
+
+        /* Enhanced before elements for new colors */
+        .grid-item:nth-child(6n+5):hover::before {
+            background: linear-gradient(45deg, 
+                rgba(34, 197, 94, 0.12) 0%,
+                rgba(34, 197, 94, 0.06) 50%,
+                rgba(34, 197, 94, 0.12) 100%);
+        }
+
+        .grid-item:nth-child(6n):hover::before {
+            background: linear-gradient(45deg, 
+                rgba(251, 146, 60, 0.12) 0%,
+                rgba(251, 146, 60, 0.06) 50%,
+                rgba(251, 146, 60, 0.12) 100%);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                grid-template-rows: repeat(auto-fit, minmax(100px, 1fr));
+                padding: 0;
+                gap: 0;
+            }
+        }
+
+        /* Additional floating particles for extra ambiance */
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .particle:nth-child(odd) {
+            animation-delay: -3s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.1;
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+                opacity: 0.3;
+            }
+        }
+
+        /* Smooth cursor trail effect */
+        .cursor-influence {
+            position: absolute;
+            pointer-events: none;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+            width: 200px;
+            height: 200px;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor-influence" id="cursorInfluence"></div>
+    <div class="grid-container" id="gridContainer"></div>
+    
+
+
+    <script>
+        // Generate grid items
+        function createGrid() {
+            const container = document.getElementById('gridContainer');
+            const itemsCount = Math.ceil((window.innerWidth / 120) * (window.innerHeight / 120));
+            
+            for (let i = 0; i < itemsCount; i++) {
+                const gridItem = document.createElement('div');
+                gridItem.className = 'grid-item';
+                container.appendChild(gridItem);
+            }
+        }
+
+        // Add floating particles
+        function createParticles() {
+            const particleCount = 15;
+            const body = document.body;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 4 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                
+                body.appendChild(particle);
+            }
+        }
+
+        // Initialize
+        createGrid();
+        createParticles();
+
+        // Recreate grid on window resize
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                document.getElementById('gridContainer').innerHTML = '';
+                createGrid();
+            }, 250);
+        });
+
+        // Enhanced mouse movement effect with cursor influence
+        const cursorInfluence = document.getElementById('cursorInfluence');
+        let mouseX = 0;
+        let mouseY = 0;
+        let currentX = 0;
+        let currentY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // Update cursor influence position
+            cursorInfluence.style.left = mouseX + 'px';
+            cursorInfluence.style.top = mouseY + 'px';
+            cursorInfluence.style.opacity = '1';
+            
+            // Smooth background movement
+            const bgMouseX = e.clientX / window.innerWidth;
+            const bgMouseY = e.clientY / window.innerHeight;
+            
+            document.body.style.backgroundPosition = 
+                `${50 + bgMouseX * 5}% ${50 + bgMouseY * 5}%`;
+        });
+
+        // Smooth animation loop for cursor influence
+        function animate() {
+            const dx = mouseX - currentX;
+            const dy = mouseY - currentY;
+            
+            currentX += dx * 0.1;
+            currentY += dy * 0.1;
+            
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Hide cursor influence when mouse leaves window
+        document.addEventListener('mouseleave', () => {
+            cursorInfluence.style.opacity = '0';
+        });
+
+        document.addEventListener('mouseenter', () => {
+            cursorInfluence.style.opacity = '1';
+        });
+    </script>
+</body>
+</html>

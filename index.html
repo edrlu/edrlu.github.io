@@ -115,6 +115,13 @@
             font-size: 12px;
         }
 
+        .links-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
+
         .achievement {
             background: white;
             padding: 15px;
@@ -123,14 +130,15 @@
             border: 1px solid #e0e0e0;
         }
 
-        .linkedin-link {
+        .profile-link {
             color: rgb(171, 87, 171);
             text-decoration: none;
             font-weight: 500;
             transition: color 0.3s ease;
+            font-size: 14px;
         }
 
-        .linkedin-link:hover {
+        .profile-link:hover {
             color: purple;
         }
 
@@ -286,7 +294,10 @@
                 Hobbies: electronics, rock climbing, Kaggle, strategy games.
             </p>
             
-            <a href="https://linkedin.com/in/edward-lu-6a95491b1" class="linkedin-link">View my LinkedIn Profile</a>
+            <div class="links-section">
+                <a href="https://linkedin.com/in/edward-lu-6a95491b1" class="profile-link">View my LinkedIn Profile</a>
+                <a href="./blog/blog_entropy.html" class="profile-link">Read my Blog</a>
+            </div>
         </div>
 
         <div class="main-content">
@@ -552,6 +563,8 @@
 
         // Initialize the neural wave system
         const neuralSystem = new PerpetualNeuralWaves('neuralWave');
+    
+        
     </script>
 </body>
 </html>
