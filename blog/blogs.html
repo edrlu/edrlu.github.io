@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Blog Collection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            /* font-family: charter, Georgia, Cambria, "Times New Roman", Times, serif; */
+            line-height: 1.58;
+            color: #242424;
+            background-color: #ffffff;
+            font-size: 20px;
+            letter-spacing: -0.003em;
+        }
+
+        .container {
+            max-width: 728px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Back to Portfolio Button */
+        .back-to-portfolio {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            background: #ffffff;
+            border: 1px solid #e6e6e6;
+            border-radius: 99em;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: #6b6b6b;
+            font-size: 14px;
+            font-weight: 400;
+            transition: all 0.15s ease;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        .back-to-portfolio:hover {
+            border-color: #242424;
+            color: #242424;
+        }
+
+        header {
+            padding: 64px 0 48px;
+            border-bottom: 1px solid #e6e6e6;
+            margin-bottom: 64px;
+        }
+
+        h1 {
+            font-size: 42px;
+            font-weight: 700;
+            color: #242424;
+            margin-bottom: 8px;
+            letter-spacing: -0.022em;
+            line-height: 1.04;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #6b6b6b;
+            font-weight: 400;
+            line-height: 1.4;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        .section {
+            margin-bottom: 64px;
+        }
+
+        .section-header {
+            margin-bottom: 32px;
+            border-bottom: 1px solid #e6e6e6;
+            padding-bottom: 16px;
+        }
+
+        .section-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 3px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #242424;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        .post-list {
+            list-style: none;
+        }
+
+        .post-item {
+            margin-bottom: 32px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid #f2f2f2;
+        }
+
+        .post-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .post-link, .pdf-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: opacity 0.15s ease;
+        }
+
+        .post-link:hover,
+        .pdf-link:hover {
+            opacity: 0.7;
+        }
+
+        .post-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #242424;
+            margin-bottom: 4px;
+            line-height: 1.22;
+            letter-spacing: -0.022em;
+        }
+
+        .post-excerpt {
+            font-size: 16px;
+            color: #6b6b6b;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #6b6b6b;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        .post-date {
+            color: #6b6b6b;
+        }
+
+        .meta-dot {
+            width: 2px;
+            height: 2px;
+            background: #6b6b6b;
+            border-radius: 50%;
+        }
+
+        .pdf-badge {
+            background: #f2f2f2;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .read-time {
+            font-size: 13px;
+            color: #6b6b6b;
+        }
+
+        footer {
+            text-align: center;
+            padding: 64px 0 32px;
+            color: #6b6b6b;
+            border-top: 1px solid #e6e6e6;
+            margin-top: 64px;
+            font-size: 14px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        /* Individual Blog Post Page */
+        .blog-post-page {
+            display: none;
+        }
+
+        .blog-post-page.active {
+            display: block;
+        }
+
+        .blog-post-header {
+            padding: 64px 0 48px;
+            border-bottom: 1px solid #e6e6e6;
+        }
+
+        .blog-post-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #242424;
+            margin-bottom: 16px;
+            letter-spacing: -0.022em;
+            line-height: 1.04;
+        }
+
+        .blog-post-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #6b6b6b;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        .blog-post-content {
+            padding: 48px 0;
+        }
+
+        .blog-content h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #242424;
+            margin: 48px 0 16px;
+            line-height: 1.04;
+            letter-spacing: -0.022em;
+        }
+
+        .blog-content p {
+            margin-bottom: 24px;
+            font-size: 20px;
+            line-height: 1.58;
+            color: #242424;
+            letter-spacing: -0.003em;
+        }
+
+        .formula {
+            background: #f7f7f7;
+            border-left: 3px solid #242424;
+            padding: 20px 24px;
+            margin: 32px 0;
+            font-family: 'SF Mono', Monaco, Inconsolata, 'Roboto Mono', Consolas, monospace;
+            font-size: 16px;
+            line-height: 1.4;
+            overflow-x: auto;
+            color: #242424;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+            
+            body {
+                font-size: 18px;
+            }
+            
+            header {
+                padding: 48px 0 32px;
+                margin-bottom: 48px;
+            }
+            
+            h1 {
+                font-size: 32px;
+            }
+            
+            .section {
+                margin-bottom: 48px;
+            }
+            
+            .section-image {
+                height: 160px;
+            }
+            
+            .post-title {
+                font-size: 20px;
+            }
+            
+            .blog-post-title {
+                font-size: 28px;
+            }
+            
+            .blog-content h3 {
+                font-size: 22px;
+            }
+            
+            .blog-content p {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back to Portfolio Button -->
+    <a href="index.html" class="back-to-portfolio">← Portfolio</a>
+
+    <!-- Main Blog List Page -->
+    <div id="blog-list-page">
+        <header>
+            <div class="container">
+                <h1>Research Blog</h1>
+                <p class="subtitle">Technical insights and mathematical explorations</p>
+            </div>
+        </header>
+
+        <div class="container">
+            <section class="section">
+                <div class="section-header">
+                    <!-- <img src="https://via.placeholder.com/728x200/f8f9fa/6b6b6b?text=Machine+Learning" alt="Machine Learning" class="section-image"> -->
+                    <h2 class="section-title">Machine Learning Math</h2>
+                </div>
+                <ul class="post-list">
+                    <li class="post-item">
+                        <a href="blog_entropy.html" class="post-link" onclick = "window.location.href='blog_entropy.html'">
+                            <h3 class="post-title">Cross Entropy: A Brief Mathematical Breakdown</h3>
+                            <p class="post-excerpt">An in-depth exploration of cross entropy's mathematical foundations, from information theory origins to its crucial role as a loss function in neural network training.</p>
+                            <div class="post-meta">
+                                <span class="post-date">Mar 15</span>
+                                <div class="meta-dot"></div>
+                                <span class="read-time">8 min read</span>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="section">
+                <div class="section-header">
+                    <!-- <img src="https://via.placeholder.com/728x200/f0f0ff/6b6b6b?text=Stochastic+Processes" alt="Stochastic Processes" class="section-image"> -->
+                    <h2 class="section-title">Stochastic Notes</h2>
+                </div>
+                <ul class="post-list">
+                    <li class="post-item">
+                        <a href="../pdfs/stochastic_processes_compact.pdf" class="pdf-link" target="_blank">
+                            <h3 class="post-title">Stochastic Processes Overview</h3>
+                            <p class="post-excerpt">Comprehensive mathematical notes covering stochastic processes, random walks, Markov chains, and their applications in modeling uncertainty.</p>
+                            <div class="post-meta">
+                                <span class="post-date">Feb 28</span>
+                                <div class="meta-dot"></div>
+                                <span class="pdf-badge">PDF</span>
+                                <div class="meta-dot"></div>
+                                <span class="read-time">Research Notes</span>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </section>
+        </div>
+
+        <footer>
+            <div class="container">
+                <p>© 2025 Research Blog</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Individual Blog Post Page -->
+    <div id="crossEntropyPost" class="blog-post-page">
+        <div class="blog-post-header">
+            <div class="container">
+                <h1 class="blog-post-title">Cross Entropy: A Brief Mathematical Breakdown</h1>
+                <div class="blog-post-meta">
+                    <span class="post-date">Mar 15, 2025</span>
+                    <div class="meta-dot"></div>
+                    <span class="read-time">8 min read</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="blog-post-content">
+            <div class="container">
+                <div class="blog-content">
+                    <p>Cross entropy is a fundamental concept in information theory and machine learning, serving as both a measure of information content and a loss function for classification tasks. Understanding its mathematical foundations provides crucial insights into why it works so effectively in training neural networks.</p>
+
+                    <h3>Information Theory Foundations</h3>
+                    <p>Cross entropy originates from Claude Shannon's information theory. The entropy of a probability distribution P is defined as:</p>
+                    
+                    <div class="formula">
+H(P) = -∑ P(x) log P(x)
+                    </div>
+
+                    <p>This measures the average information content or "surprise" in a distribution. Cross entropy extends this concept to measure the difference between two probability distributions P and Q:</p>
+
+                    <div class="formula">
+H(P,Q) = -∑ P(x) log Q(x)
+                    </div>
+
+                    <h3>Machine Learning Applications</h3>
+                    <p>In classification tasks, cross entropy loss compares the predicted probability distribution Q (model output) with the true distribution P (one-hot encoded labels). For a single training example with true class i:</p>
+
+                    <div class="formula">
+L = -log(Q(y_i))
+                    </div>
+
+                    <p>Where Q(y_i) is the predicted probability for the correct class. This formulation has several advantages:</p>
+
+                    <p><strong>Gradient Properties:</strong> The cross entropy loss provides strong gradients when predictions are wrong and smaller gradients when predictions are correct, leading to efficient learning.</p>
+
+                    <p><strong>Probabilistic Interpretation:</strong> The loss directly corresponds to the negative log-likelihood, making it a natural choice for probabilistic models.</p>
+
+                    <p><strong>Convexity:</strong> For linear models, cross entropy loss is convex, guaranteeing a global minimum.</p>
+
+                    <h3>Relationship to KL Divergence</h3>
+                    <p>Cross entropy is closely related to Kullback-Leibler (KL) divergence:</p>
+
+                    <div class="formula">
+D_KL(P||Q) = H(P,Q) - H(P)
+                    </div>
+
+                    <p>Since H(P) is constant for fixed true labels, minimizing cross entropy is equivalent to minimizing KL divergence, which explains why cross entropy effectively measures distributional similarity.</p>
+
+                    <p>This mathematical framework makes cross entropy an indispensable tool in modern machine learning, providing both theoretical justification and practical effectiveness in training classification models.</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="container">
+                <p>© 2025 Research Blog</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function showBlogPost(postId) {
+            document.getElementById('blog-list-page').style.display = 'none';
+            document.getElementById(postId).classList.add('active');
+            window.scrollTo(0, 0);
+            history.pushState({page: postId}, '', `#${postId}`);
+        }
+
+        function showBlogList() {
+            const blogPosts = document.querySelectorAll('.blog-post-page');
+            blogPosts.forEach(post => post.classList.remove('active'));
+            document.getElementById('blog-list-page').style.display = 'block';
+            history.pushState({page: 'list'}, '', '');
+        }
+
+        window.addEventListener('popstate', function(event) {
+            if (event.state && event.state.page && event.state.page !== 'list') {
+                showBlogPost(event.state.page);
+            } else {
+                showBlogList();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.location.hash) {
+                const postId = window.location.hash.substring(1);
+                const postElement = document.getElementById(postId);
+                if (postElement && postElement.classList.contains('blog-post-page')) {
+                    showBlogPost(postId);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

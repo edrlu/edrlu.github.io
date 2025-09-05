@@ -26,6 +26,169 @@
             margin: 0 auto;
             min-height: 100vh;
             display: flex;
+            transition: filter 0.3s ease;
+        }
+
+        /* Blur effect when popup is active */
+        .container.blurred {
+            filter: blur(3px);
+        }
+
+        /* Professional Popup Styles */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(2px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .popup {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 32px;
+            max-width: 520px;
+            width: 90%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            transform: translateY(20px) scale(0.96);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .popup-overlay.active .popup {
+            transform: translateY(0) scale(1);
+        }
+
+        .popup-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .popup-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .popup-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #666;
+        }
+
+        .popup-title {
+            color: #1a1a1a;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        .popup-subtitle {
+            color: #666;
+            font-size: 13px;
+            font-weight: 400;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        .popup-message {
+            color: #4a4a4a;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            font-weight: 400;
+        }
+
+        .popup-message strong {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .popup-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .popup-btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            border: 1px solid transparent;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .popup-btn-primary {
+            background: #1a1a1a;
+            color: white;
+            border-color: #1a1a1a;
+        }
+
+        .popup-btn-primary:hover {
+            background: #333;
+            border-color: #333;
+        }
+
+        .popup-btn-secondary {
+            background: white;
+            color: #666;
+            border-color: #d0d0d0;
+        }
+
+        .popup-btn-secondary:hover {
+            background: #f8f8f8;
+            border-color: #999;
+            color: #333;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 20px;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: #333;
         }
 
         .sidebar {
@@ -228,7 +391,6 @@
             justify-content: center;
             color: #666;
             font-size: 16px;
-            /* box-shadow: 0 4px 15px rgba(0,0,0,0.1); */
         }
 
         .project-image-2 {
@@ -242,7 +404,6 @@
             justify-content: center;
             color: #666;
             font-size: 16px;
-            /* box-shadow: 0 4px 15px rgba(0,0,0,0.1); */
         }
 
         .chart-placeholder {
@@ -270,11 +431,53 @@
             .container {
                 flex-direction: column;
             }
+
+            .popup {
+                margin: 20px;
+                padding: 24px;
+            }
+
+            .popup-buttons {
+                flex-direction: column;
+            }
+
+            .popup-btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Professional Blog Post Notification -->
+    <div class="popup-overlay" id="blogPopup">
+        <div class="popup">
+            <button class="close-btn" id="closePopup">&times;</button>
+            
+            <div class="popup-header">
+                <div class="popup-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="popup-title">New Blog Post Out!</h2>
+                    <p class="popup-subtitle">Technical Blog Post • September 2025</p>
+                </div>
+            </div>
+            
+            <div class="popup-message">
+                <strong>Entropy and Information Theory: Mathematical Foundations and Applications</strong><br><br>
+                A comprehensive technical exploration of information-theoretic concepts, covering mathematical derivations, practical applications, and connections to statistical mechanics. Includes detailed proofs and computational examples.
+            </div>
+            
+            <div class="popup-buttons">
+                <button class="popup-btn popup-btn-secondary" id="dismissPopup">Dismiss</button>
+                <a href="./blog/blog_entropy.html" class="popup-btn popup-btn-primary">Read Article</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="mainContainer">
         <div class="sidebar">
             <h1 class="name">Edward Lu</h1>
             
@@ -283,7 +486,7 @@
             </div>
             
             <p class="bio">
-                UC Berkeley Statistics & IEOR 2nd year student with research experience in 
+                UC Berkeley Statistics & Data Science 3rd year student with research experience in 
                 biomedical data analytics. Research Assistant 
                 contributing to peer-reviewed publications in Clinical Cancer Research 
                 and Journal of Translational Medicine. Interested in deep learning, stochastic processes, 
@@ -296,7 +499,7 @@
             
             <div class="links-section">
                 <a href="https://linkedin.com/in/edward-lu-6a95491b1" class="profile-link">View my LinkedIn Profile</a>
-                <a href="./blog/blog_entropy.html" class="profile-link">Read my Blog</a>
+                <a href="./blog/blogs.html" class="profile-link">Read my Blog</a>
             </div>
         </div>
 
@@ -561,10 +764,45 @@
             }
         }
 
+        // Popup functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const popup = document.getElementById('blogPopup');
+            const mainContainer = document.getElementById('mainContainer');
+            const closeBtn = document.getElementById('closePopup');
+            const dismissBtn = document.getElementById('dismissPopup');
+
+            // Show popup with delay for professional appearance
+            setTimeout(() => {
+                popup.classList.add('active');
+                mainContainer.classList.add('blurred');
+            }, 1000);
+
+            function closePopup() {
+                popup.classList.remove('active');
+                mainContainer.classList.remove('blurred');
+            }
+
+            // Close popup events
+            closeBtn.addEventListener('click', closePopup);
+            dismissBtn.addEventListener('click', closePopup);
+
+            // Close on overlay click
+            popup.addEventListener('click', function(e) {
+                if (e.target === popup) {
+                    closePopup();
+                }
+            });
+
+            // Close on Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && popup.classList.contains('active')) {
+                    closePopup();
+                }
+            });
+        });
+
         // Initialize the neural wave system
         const neuralSystem = new PerpetualNeuralWaves('neuralWave');
-    
-        
     </script>
 </body>
 </html>
