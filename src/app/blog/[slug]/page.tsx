@@ -96,22 +96,23 @@ export default async function BlogPost({ params }: BlogPostPageProps) {
 
   return (
     <div className={styles.container}>
-      <Link href="/blog" className={styles.backButton}>
-        ← Back to Blog
-      </Link>
-
       <header className={styles.header}>
-        <div className={styles.meta}>
-          <span className={styles.category}>{post.category}</span>
-          <span className={styles.dot}>·</span>
-          <span className={styles.date}>{post.date}</span>
-          <span className={styles.dot}>·</span>
-          <span className={styles.readTime}>{post.readTime}</span>
-        </div>
-        <h1 className={styles.title}>{post.title}</h1>
+        <Link href="/" className={styles.homeLink}>Edward Lu</Link>
+        <nav className={styles.nav}>
+          <Link href="/blog" className={styles.navLink}>Blog</Link>
+        </nav>
       </header>
 
-      <div className={styles.content}>{renderContent()}</div>
+      <article>
+        <div className={styles.postHeader}>
+          <h1 className={styles.title}>{post.title}</h1>
+          <div className={styles.meta}>
+            <time className={styles.date}>{post.date}</time>
+          </div>
+        </div>
+
+        <div className={styles.content}>{renderContent()}</div>
+      </article>
     </div>
   )
 }
