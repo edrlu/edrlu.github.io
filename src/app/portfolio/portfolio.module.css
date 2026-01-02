@@ -1,0 +1,176 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 300px;
+  padding: 40px 30px;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+  left: 0;
+  top: 0;
+  z-index: 10;
+}
+
+/* Center the sidebar within the max-width container */
+@media (min-width: 1200px) {
+  .sidebar {
+    left: calc(50% - 600px);
+  }
+}
+
+.name {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #2c3e50;
+  padding-top: 10px;
+}
+
+.bio {
+  text-align: left;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  font-size: 14px;
+  margin-top: 30px;
+}
+
+.hobbies {
+  text-align: left;
+  color: #888;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  font-size: 12px;
+}
+
+.linksSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Main Content */
+.mainContent {
+  flex: 1;
+  padding: 40px 40px 40px 70px;
+  overflow-y: auto;
+  margin-left: 300px;
+}
+
+.header {
+  margin-bottom: 40px;
+  padding-bottom: 30px;
+  font-size: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.header p {
+  font-size: 18px;
+  color: #2c3e50;
+  margin-bottom: 5px;
+}
+
+/* Projects */
+.project {
+  margin-bottom: 50px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #eee;
+}
+
+.project:last-child {
+  border-bottom: none;
+}
+
+.projectTitle {
+  font-size: 17px;
+  font-weight: 600;
+  color: #600768;
+  margin-bottom: 15px;
+}
+
+.projectDescription {
+  color: #666;
+  margin-bottom: 15px;
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+.techTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.tag {
+  background: white;
+  color: #666;
+  border: 1px solid #e0e0e0;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.projectImage {
+  width: 100%;
+  height: 240px;
+  background: linear-gradient(45deg, #f1f2f6, #ddd);
+  border-radius: 8px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 16px;
+  overflow: hidden;
+}
+
+.projectImageLarge {
+  width: 100%;
+  height: 550px;
+  background: linear-gradient(45deg, #f1f2f6, #ddd);
+  border-radius: 8px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 16px;
+  overflow: hidden;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    left: auto;
+    top: auto;
+  }
+
+  .mainContent {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .container {
+    flex-direction: column;
+  }
+
+  .projectImageLarge {
+    height: 350px;
+  }
+}
