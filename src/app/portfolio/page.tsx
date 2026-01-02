@@ -1,169 +1,110 @@
 import Link from 'next/link'
-import PerpetualNeuralWaves from '@/components/animations/PerpetualNeuralWaves'
 import styles from './portfolio.module.css'
+
+const projects = [
+  {
+    title: 'Options Sentiment Agent',
+    description:
+      'Deep learning model using Stochastic-depth Residual Bi-GRU to predict optimal options trading opportunities from market data and sentiment analysis. Applied advanced training techniques including label smoothing, focal loss, and Stochastic Weight Averaging for robust convergence on imbalanced financial datasets.',
+    tech: ['PyTorch', 'Python', 'Deep Learning', 'Bi-GRU', 'Sentiment Analysis'],
+    link: 'https://github.com/edrlu',
+    image: '/images/train_graphs.png',
+  },
+  {
+    title: 'Custom Mail Intelligence Platform',
+    description:
+      'Intelligent email management system integrating Google OAuth 2.0, Gemini API, and Ollama for natural language processing. Automatically categorizes emails with 95% accuracy, provides smart summarization and priority scoring. Processes over 300 emails per minute with Next.js frontend and FastAPI backend.',
+    tech: ['FastAPI', 'Next.js', 'Google OAuth 2.0', 'Gemini API', 'Ollama', 'NLP'],
+    link: 'https://github.com/edrlu/gmail-organizer',
+    image: '/images/custom_mail_platform.png',
+  },
+  {
+    title: 'Biomedical Research',
+    description:
+      'Data analytics and statistical analysis for colorectal cancer resistance and mesothelial cell damage research. Processed genomic datasets, conducted bioinformatics analysis on RNA sequencing data. Contributed to 2 peer-reviewed publications in Clinical Cancer Research and Journal of Translational Medicine.',
+    tech: ['Python', 'Pandas', 'Bioinformatics', 'RNA Sequencing', 'Statistical Analysis'],
+    link: 'https://github.com/edrlu',
+    image: '/images/research_full.png',
+  },
+]
 
 export default function Portfolio() {
   return (
     <div className={styles.container}>
-      {/* Sidebar */}
-      <div className={styles.sidebar}>
-        <h1 className={styles.name}>Edward Lu</h1>
-
-        <PerpetualNeuralWaves size={200} gridSize={20} speed={120} />
-
+      <header className={styles.header}>
+        <Link href="/" className={styles.backLink}>
+          ← Back
+        </Link>
+        <h1 className={styles.title}>Edward Lu</h1>
+        <p className={styles.subtitle}>Statistics & Data Science · UC Berkeley</p>
         <p className={styles.bio}>
-          UC Berkeley Statistics & Data Science 3rd year student with research experience in
-          biomedical data analytics. Research Assistant contributing to peer-reviewed publications
-          in Clinical Cancer Research and Journal of Translational Medicine. Interested in deep
-          learning, stochastic processes, and full-stack development.
+          Third-year student with research experience in biomedical data analytics. Research
+          Assistant contributing to peer-reviewed publications. Interested in deep learning,
+          stochastic processes, and full-stack development.
         </p>
 
-        <p className={styles.hobbies}>
-          Hobbies: electronics, rock climbing, Kaggle, strategy games.
-        </p>
-
-        <div className={styles.linksSection}>
+        <div className={styles.links}>
+          <a
+            href="https://github.com/edrlu"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.link}
+          >
+            GitHub
+          </a>
           <a
             href="https://www.linkedin.com/in/edward-lu-a68aa724b/"
-            className="linkedin-link"
             target="_blank"
             rel="noopener noreferrer"
+            className={styles.link}
           >
-            View my LinkedIn Profile
+            LinkedIn
           </a>
-          <Link href="/blog" className="linkedin-link">
-            Read my Blog
-          </Link>
-          <Link href="/" className="linkedin-link">
-            Back to Home
+          <Link href="/blog" className={styles.link}>
+            Blog
           </Link>
         </div>
-      </div>
+      </header>
 
-      {/* Main Content */}
-      <div className={styles.mainContent}>
-        <div className={styles.header}>
-          <p>Selected projects in data science, machine learning and biomedical research</p>
-        </div>
+      <section className={styles.projects}>
+        <h2 className={styles.sectionTitle}>Selected Projects</h2>
 
-        {/* Project 1: Options Sentiment Agent */}
-        <div className={styles.project}>
-          <h2 className={styles.projectTitle}>Options Sentiment Agent</h2>
-          <p className={styles.projectDescription}>
-            Developed a deep learning model using Stochastic-depth Residual Bi-GRU techniques to
-            predict optimal options trading opportunities from public market data and sentiment
-            analysis. Applied advanced training techniques including label smoothing, focal loss,
-            and Stochastic Weight Averaging with early-stopping validation to achieve robust
-            convergence on imbalanced and limited financial datasets.
-          </p>
+        {projects.map((project, index) => (
+          <article key={index} className={styles.project}>
+            <div className={styles.projectContent}>
+              <h3 className={styles.projectTitle}>{project.title}</h3>
+              <p className={styles.projectDescription}>{project.description}</p>
 
-          <div className={styles.techTags}>
-            <span className={styles.tag}>PyTorch</span>
-            <span className={styles.tag}>Python</span>
-            <span className={styles.tag}>Deep Learning</span>
-            <span className={styles.tag}>Bi-GRU</span>
-            <span className={styles.tag}>Sentiment Analysis</span>
-            <span className={styles.tag}>Matplotlib</span>
-          </div>
+              <div className={styles.techStack}>
+                {project.tech.map((tech, i) => (
+                  <span key={i} className={styles.tech}>
+                    {tech}
+                  </span>
+                ))}
+              </div>
 
-          <a
-            href="https://github.com/edrlu"
-            className="project-link"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            View code on GitHub
-          </a>
+              <a
+                href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.projectLink}
+              >
+                View Project →
+              </a>
+            </div>
 
-          <div className={styles.projectImage}>
-            <img
-              src="/images/train_graphs.png"
-              style={{ width: '100%', height: '100%', objectFit: 'fill' }}
-              alt="Options Sentiment Agent"
-            />
-          </div>
-        </div>
+            {project.image && (
+              <div className={styles.projectImage}>
+                <img src={project.image} alt={project.title} />
+              </div>
+            )}
+          </article>
+        ))}
+      </section>
 
-        {/* Project 2: Custom Mail Intelligence Platform */}
-        <div className={styles.project}>
-          <h2 className={styles.projectTitle}>Custom Mail Intelligence Platform</h2>
-          <p className={styles.projectDescription}>
-            Built an intelligent email management system that integrates Google OAuth 2.0 for secure
-            Gmail access with Gemini API and Ollama for natural language processing. The platform
-            automatically categorizes emails with 95% accuracy using custom categories, provides
-            smart summarization and priority scoring, and features template response capabilities
-            with a Next.js interface and FastAPI backend capable of processing over 300 emails per
-            minute.
-          </p>
-
-          <div className={styles.techTags}>
-            <span className={styles.tag}>FastAPI</span>
-            <span className={styles.tag}>Next.js</span>
-            <span className={styles.tag}>JavaScript</span>
-            <span className={styles.tag}>Google OAuth 2.0</span>
-            <span className={styles.tag}>Gemini API</span>
-            <span className={styles.tag}>Ollama</span>
-            <span className={styles.tag}>NLP</span>
-          </div>
-
-          <a
-            href="https://github.com/edrlu/gmail-organizer"
-            className="project-link"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            View project details
-          </a>
-
-          <div className={styles.projectImage}>
-            <img
-              src="/images/custom_mail_platform.png"
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              alt="Custom Mail Intelligence Platform"
-            />
-          </div>
-        </div>
-
-        {/* Project 3: Biomedical Research */}
-        <div className={styles.project}>
-          <h2 className={styles.projectTitle}>
-            Biomedical Research - Colorectal Cancer & Mesothelial Cell Analysis
-          </h2>
-          <p className={styles.projectDescription}>
-            Performed data analytics and statistical analysis for colorectal cancer resistance and
-            mesothelial cell damage research as Research Assistant. Processed genomic datasets using
-            Python/pandas, conducted bioinformatics analysis on RNA sequencing data, and prepared
-            manuscript figures. Contributed to 2 peer-reviewed publications in Clinical Cancer
-            Research and Journal of Translational Medicine.
-          </p>
-
-          <div className={styles.techTags}>
-            <span className={styles.tag}>Python</span>
-            <span className={styles.tag}>Pandas</span>
-            <span className={styles.tag}>Bioinformatics</span>
-            <span className={styles.tag}>RNA Sequencing</span>
-            <span className={styles.tag}>Statistical Analysis</span>
-            <span className={styles.tag}>Genomics</span>
-          </div>
-
-          <a
-            href="https://github.com/edrlu"
-            className="project-link"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            View publications
-          </a>
-
-          <div className={styles.projectImageLarge}>
-            <img
-              src="/images/research_full.png"
-              style={{ width: '100%', height: '100%', objectFit: 'fill' }}
-              alt="Biomedical Research"
-            />
-          </div>
-        </div>
-      </div>
+      <footer className={styles.footer}>
+        <p>© 2026 Edward Lu</p>
+      </footer>
     </div>
   )
 }

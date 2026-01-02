@@ -1,9 +1,11 @@
 import Link from 'next/link'
+import ParticleNetwork from '@/components/animations/ParticleNetwork'
 import styles from './page.module.css'
 
 export default function Home() {
   return (
     <main className={styles.main}>
+      <ParticleNetwork />
       <div className={styles.container}>
         <h1 className={styles.name}>Edward Lu</h1>
         <p className={styles.location}>Berkeley, California</p>
