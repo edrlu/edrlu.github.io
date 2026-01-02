@@ -14,6 +14,7 @@ export default function ParticleNetwork() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const mouseRef = useRef({ x: 0, y: 0 })
   const particlesRef = useRef<Particle[]>([])
+  const startTimeRef = useRef<number>(Date.now())
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -70,11 +71,16 @@ export default function ParticleNetwork() {
       const particles = particlesRef.current
       const mouse = mouseRef.current
 
+      // Calculate initial momentum boost (dampens over first 3 seconds)
+      const elapsed = (Date.now() - startTimeRef.current) / 1000
+      const momentumBoost = elapsed < 3 ? Math.max(0, 3 - elapsed) : 0
+
       // Update and draw particles
       particles.forEach((particle, i) => {
-        // Move particle
-        particle.x += particle.vx
-        particle.y += particle.vy
+        // Move particle with initial momentum boost
+        const velocityMultiplier = 1 + momentumBoost
+        particle.x += particle.vx * velocityMultiplier
+        particle.y += particle.vy * velocityMultiplier
 
         // Bounce off edges
         if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1
