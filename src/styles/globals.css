@@ -55,8 +55,8 @@
   --c-faint: hsl(0 0% 60%);
   --c-line: hsl(0 0% 0% / 0.12);
   --c-card: hsl(0 0% 100% / 0.55);
-  --c-accent: hsl(277 92% 56%);
-  --c-accent2: hsl(197 92% 52%);
+  --c-accent: hsl(354 74% 44%);
+  --c-accent2: hsl(215 70% 44%);
   --c-frame: hsl(0 0% 100%);
   --panel-bg: hsl(0 0% 100% / 0.92);
   --panel-text: hsl(0 0% 8%);
@@ -145,9 +145,10 @@ body {
   font-size: var(--fs-0);
   line-height: 1.45;
   color: var(--c-text);
-  background: radial-gradient(800px 520px at 15% 10%, hsl(277 90% 60% / 0.18), transparent 60%),
-    radial-gradient(900px 560px at 90% 90%, hsl(197 90% 55% / 0.13), transparent 62%),
-    linear-gradient(180deg, hsl(0 0% 100% / 0.35), transparent 45%),
+  background:
+    linear-gradient(180deg, hsl(0 0% 100% / 0.5), transparent 40%),
+    radial-gradient(1100px 720px at 18% 12%, hsl(354 74% 44% / 0.06), transparent 62%),
+    radial-gradient(1100px 720px at 82% 88%, hsl(215 70% 44% / 0.05), transparent 65%),
     var(--c-bg);
   min-height: 100svh;
   overflow: hidden;
@@ -194,10 +195,10 @@ button:focus-visible {
 .backgroundGlow {
   position: absolute;
   inset: -20%;
-  opacity: 0.55;
-  background: radial-gradient(closest-side at 30% 20%, hsl(277 90% 60% / 0.14), transparent 60%),
-    radial-gradient(closest-side at 70% 75%, hsl(197 90% 55% / 0.12), transparent 65%);
-  filter: blur(16px) saturate(120%);
+  opacity: 0.3;
+  background: radial-gradient(closest-side at 28% 20%, hsl(354 74% 44% / 0.09), transparent 62%),
+    radial-gradient(closest-side at 78% 80%, hsl(215 70% 44% / 0.07), transparent 66%);
+  filter: blur(20px) saturate(105%);
 }
 
 .grain {
@@ -205,7 +206,7 @@ button:focus-visible {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  opacity: 0.1;
+  opacity: 0.06;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E");
   background-size: 180px 180px;
