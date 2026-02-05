@@ -33,4 +33,4 @@ yarn-error.log*
 next-env.d.ts
 
 # local project gallery (not part of site build)
-gallery/
+/gallery/

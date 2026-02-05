@@ -1,6 +1,0 @@
-New Features
- - use npm compiler and write it in a professional UI development langauge so that its easier to understand
- - should npm compile into static css and htmls
- - create a new landing page with a professional style like medium.com 
- - password protect and move the portfolio the a /portfolio root
- - encrypt the contents of the public repo as in make them seem encoded so they are hard to read.
