@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import styles from './portfolio.module.css'
 
@@ -9,6 +10,7 @@ const projects = [
     tech: ['PyTorch', 'Python', 'Deep Learning', 'Bi-GRU', 'Sentiment Analysis'],
     link: 'https://github.com/edrlu',
     image: '/images/train_graphs.png',
+    imageSize: { width: 1678, height: 584 },
   },
   {
     title: 'Custom Mail Intelligence Platform',
@@ -17,6 +19,7 @@ const projects = [
     tech: ['FastAPI', 'Next.js', 'Google OAuth 2.0', 'Gemini API', 'Ollama', 'NLP'],
     link: 'https://github.com/edrlu/gmail-organizer',
     image: '/images/custom_mail_platform.png',
+    imageSize: { width: 1592, height: 508 },
   },
   {
     title: 'Biomedical Research',
@@ -25,86 +28,65 @@ const projects = [
     tech: ['Python', 'Pandas', 'Bioinformatics', 'RNA Sequencing', 'Statistical Analysis'],
     link: 'https://github.com/edrlu',
     image: '/images/research_full.png',
+    imageSize: { width: 839, height: 574 },
   },
 ]
 
 export default function Portfolio() {
   return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <Link href="/" className={styles.backLink}>
-          ← Back
-        </Link>
-        <h1 className={styles.title}>Edward Lu</h1>
-        <p className={styles.subtitle}>Statistics & Data Science · UC Berkeley</p>
-        <p className={styles.bio}>
-          Third-year student with research experience in biomedical data analytics. Research
-          Assistant contributing to peer-reviewed publications. Interested in deep learning,
-          stochastic processes, and full-stack development.
-        </p>
-
-        <div className={styles.links}>
-          <a
-            href="https://github.com/edrlu"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.link}
-          >
-            GitHub
-          </a>
-          <a
-            href="https://www.linkedin.com/in/edward-lu-a68aa724b/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.link}
-          >
-            LinkedIn
-          </a>
-          <Link href="/blog" className={styles.link}>
-            Blog
+    <section className="contentPanel" aria-label="Portfolio">
+      <div className="contentPanelGrid">
+        <aside className="contentPanelLeft">
+          <Link className={styles.backLink} href="/">
+            ← Back
           </Link>
+          <h1 className="contentPanelTitle">Portfolio</h1>
+        </aside>
+
+        <div className="contentPanelRight">
+          <div className={styles.header}>
+            <h2 className={styles.title}>Selected projects</h2>
+            <p className={styles.subtitle}>
+              Deep learning, NLP, and full‑stack systems — focused on clarity, performance, and measurable impact.
+            </p>
+          </div>
+
+          <div className={styles.projects} aria-label="Projects">
+            {projects.map((project) => (
+              <article key={project.title} className={styles.project}>
+                <div className={styles.projectTop}>
+                  <h3 className={styles.projectTitle}>{project.title}</h3>
+                  <a href={project.link} target="_blank" rel="noopener noreferrer" className={styles.projectLink}>
+                    View ↗
+                  </a>
+                </div>
+
+                <p className={styles.projectDescription}>{project.description}</p>
+
+                <div className={styles.techStack} aria-label="Tech stack">
+                  {project.tech.map((tech) => (
+                    <span key={tech} className={styles.tech}>
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+
+                {project.image && (
+                  <div className={styles.projectImage}>
+                    <Image
+                      src={project.image}
+                      alt={project.title}
+                      width={project.imageSize.width}
+                      height={project.imageSize.height}
+                      sizes="(max-width: 820px) 100vw, 860px"
+                    />
+                  </div>
+                )}
+              </article>
+            ))}
+          </div>
         </div>
-      </header>
-
-      <section className={styles.projects}>
-        <h2 className={styles.sectionTitle}>Selected Projects</h2>
-
-        {projects.map((project, index) => (
-          <article key={index} className={styles.project}>
-            <div className={styles.projectContent}>
-              <h3 className={styles.projectTitle}>{project.title}</h3>
-              <p className={styles.projectDescription}>{project.description}</p>
-
-              <div className={styles.techStack}>
-                {project.tech.map((tech, i) => (
-                  <span key={i} className={styles.tech}>
-                    {tech}
-                  </span>
-                ))}
-              </div>
-
-              <a
-                href={project.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.projectLink}
-              >
-                View Project →
-              </a>
-            </div>
-
-            {project.image && (
-              <div className={styles.projectImage}>
-                <img src={project.image} alt={project.title} />
-              </div>
-            )}
-          </article>
-        ))}
-      </section>
-
-      <footer className={styles.footer}>
-        <p>© 2026 Edward Lu</p>
-      </footer>
-    </div>
+      </div>
+    </section>
   )
 }

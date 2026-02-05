@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 interface WaveSource {
   x: number
@@ -64,7 +64,7 @@ export default function PerpetualNeuralWaves({
   }, [gridSize])
 
   // Update wave sources
-  const updateWaveSources = () => {
+  const updateWaveSources = useCallback(() => {
     waveSourcesRef.current.forEach((source, index) => {
       const t = frameRef.current * 0.01 + (index * Math.PI) / 2
 
@@ -76,10 +76,11 @@ export default function PerpetualNeuralWaves({
       source.y = centerY + radius * Math.sin(t + source.phase)
       source.amplitude = 0.5 + 0.5 * Math.sin(t * source.frequency * 10)
     })
-  }
+  }, [])
 
   // Calculate wave value at position
-  const calculateWaveValue = (x: number, y: number): number => {
+  const calculateWaveValue = useCallback(
+    (x: number, y: number): number => {
     const nx = x / gridSize
     const ny = y / gridSize
     let value = basePatternRef.current[y][x]
@@ -104,10 +105,12 @@ export default function PerpetualNeuralWaves({
       0.5 + 0.5 * Math.sin(frameRef.current * 0.005 + x * 0.1 + y * 0.1)
 
     return activation * temporalMod
-  }
+    },
+    [gridSize],
+  )
 
   // Update grid
-  const update = () => {
+  const update = useCallback(() => {
     if (!runningRef.current) return
 
     updateWaveSources()
@@ -120,10 +123,10 @@ export default function PerpetualNeuralWaves({
     }
 
     frameRef.current++
-  }
+  }, [calculateWaveValue, gridSize, updateWaveSources])
 
   // Render cells
-  const render = () => {
+  const render = useCallback(() => {
     const newCells: React.ReactElement[] = []
 
     for (let y = 0; y < gridSize; y++) {
@@ -172,7 +175,7 @@ export default function PerpetualNeuralWaves({
     }
 
     setCells(newCells)
-  }
+  }, [cellSize, gridSize])
 
   // Animation loop
   useEffect(() => {
@@ -197,7 +200,7 @@ export default function PerpetualNeuralWaves({
         cancelAnimationFrame(animationRef.current)
       }
     }
-  }, [speed, gridSize])
+  }, [gridSize, render, speed, update])
 
   return (
     <div

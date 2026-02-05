@@ -95,24 +95,31 @@ export default async function BlogPost({ params }: BlogPostPageProps) {
   }
 
   return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <Link href="/" className={styles.homeLink}>Edward Lu</Link>
-        <nav className={styles.nav}>
-          <Link href="/blog" className={styles.navLink}>Blog</Link>
-        </nav>
-      </header>
-
-      <article>
-        <div className={styles.postHeader}>
-          <h1 className={styles.title}>{post.title}</h1>
-          <div className={styles.meta}>
-            <time className={styles.date}>{post.date}</time>
+    <section className="contentPanel" aria-label={post.title}>
+      <div className="contentPanelGrid">
+        <aside className="contentPanelLeft">
+          <Link href="/blog" className={styles.backLink}>
+            ← Back
+          </Link>
+          <h1 className="contentPanelTitle">Blog</h1>
+          <div className={styles.sideMeta}>
+            <div className={styles.sideTitle}>{post.title}</div>
+            <div className={styles.sideLine}>
+              <time>{post.date}</time>
+              <span aria-hidden="true"> · </span>
+              <span>{post.readTime}</span>
+            </div>
           </div>
-        </div>
+        </aside>
 
-        <div className={styles.content}>{renderContent()}</div>
-      </article>
-    </div>
+        <div className={`contentPanelRight ${styles.right}`}>
+          <div className={styles.header}>
+            <h2 className={styles.title}>{post.title}</h2>
+            <p className={styles.excerpt}>{post.excerpt}</p>
+          </div>
+          <div className={styles.content}>{renderContent()}</div>
+        </div>
+      </div>
+    </section>
   )
 }

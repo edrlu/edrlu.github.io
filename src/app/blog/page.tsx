@@ -23,34 +23,41 @@ export default function Blog() {
   }
 
   return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <Link href="/" className={styles.homeLink}>Edward Lu</Link>
-        <nav className={styles.nav}>
-          <Link href="/blog" className={styles.navLinkActive}>Blog</Link>
-        </nav>
-      </header>
+    <section className="contentPanel" aria-label="Blog">
+      <div className="contentPanelGrid">
+        <aside className="contentPanelLeft">
+          <Link className={styles.backLink} href="/">
+            ← Back
+          </Link>
+          <h1 className="contentPanelTitle">Blog</h1>
+        </aside>
 
-      <div className={styles.content}>
-        {sortedYears.map((year) => (
-          <section key={year} className={styles.section}>
-            <h2 className={styles.year}>{year}</h2>
+        <div className="contentPanelRight">
+          {sortedYears.map((year) => (
+            <section key={year} className={styles.section}>
+              <h2 className={styles.year}>{year}</h2>
 
-            <div className={styles.posts}>
-              {postsByYear[year].map((post) => (
-                <Link
-                  key={post.slug}
-                  href={`/blog/${post.slug}`}
-                  className={styles.post}
-                >
-                  <time className={styles.date}>{formatDate(post.date)}</time>
-                  <h3 className={styles.postTitle}>{post.title}</h3>
-                </Link>
-              ))}
-            </div>
-          </section>
-        ))}
+              <div className={styles.posts}>
+                {postsByYear[year].map((post) => (
+                  <Link key={post.slug} href={`/blog/${post.slug}`} className={styles.post}>
+                    <div className={styles.postTop}>
+                      <time className={styles.date}>{formatDate(post.date)}</time>
+                      <span className={styles.postMeta}>{post.readTime}</span>
+                    </div>
+                    <h3 className={styles.postTitle}>{post.title}</h3>
+                    <div className={styles.postBottom}>
+                      <span className={styles.postCategory}>{post.category}</span>
+                      <span className={styles.postArrow} aria-hidden="true">
+                        →
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   )
 }

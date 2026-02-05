@@ -23,11 +23,31 @@ export default function ParticleNetwork() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    // Set canvas size
-    const setCanvasSize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+    const colorsRef = { particle: 'rgba(0,0,0,0.42)', line: 'rgba(0,0,0,0.2)', mouse: 'rgba(0,0,0,0.24)' }
+    let rafId = 0
+    let frame = 0
+
+    const readColors = () => {
+      const style = getComputedStyle(document.documentElement)
+      const particle = style.getPropertyValue('--fx-particle').trim()
+      const line = style.getPropertyValue('--fx-line').trim()
+      const mouse = style.getPropertyValue('--fx-mouse').trim()
+      if (particle) colorsRef.particle = particle
+      if (line) colorsRef.line = line
+      if (mouse) colorsRef.mouse = mouse
     }
+
+    // Set canvas size (HiDPI)
+    const setCanvasSize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      canvas.width = Math.floor(window.innerWidth * dpr)
+      canvas.height = Math.floor(window.innerHeight * dpr)
+      canvas.style.width = `${window.innerWidth}px`
+      canvas.style.height = `${window.innerHeight}px`
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    }
+
+    readColors()
     setCanvasSize()
 
     // Configuration
@@ -36,9 +56,6 @@ export default function ParticleNetwork() {
       particleSpeed: 0.3,
       connectionDistance: 150,
       mouseRadius: 150,
-      particleColor: 'rgba(0, 0, 0, 0.5)',
-      lineColor: 'rgba(0, 0, 0, 0.35)',
-      mouseLineColor: 'rgba(0, 0, 0, 0.4)',
     }
 
     // Initialize particles
@@ -46,8 +63,8 @@ export default function ParticleNetwork() {
       particlesRef.current = []
       for (let i = 0; i < config.particleCount; i++) {
         particlesRef.current.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
           vx: (Math.random() - 0.5) * config.particleSpeed,
           vy: (Math.random() - 0.5) * config.particleSpeed,
           radius: 2,
@@ -64,9 +81,18 @@ export default function ParticleNetwork() {
       }
     }
 
+    const handleResize = () => {
+      setCanvasSize()
+      initParticles()
+    }
+
     // Animation loop
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      rafId = requestAnimationFrame(animate)
+      frame++
+      if (frame % 60 === 0) readColors()
+
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
 
       const particles = particlesRef.current
       const mouse = mouseRef.current
@@ -83,15 +109,15 @@ export default function ParticleNetwork() {
         particle.y += particle.vy * velocityMultiplier
 
         // Bounce off edges
-        if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1
-        if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1
+        if (particle.x < 0 || particle.x > window.innerWidth) particle.vx *= -1
+        if (particle.y < 0 || particle.y > window.innerHeight) particle.vy *= -1
 
         // Mouse interaction - attract particles
         const dx = mouse.x - particle.x
         const dy = mouse.y - particle.y
         const distance = Math.sqrt(dx * dx + dy * dy)
 
-        if (distance < config.mouseRadius) {
+        if (distance > 0.0001 && distance < config.mouseRadius) {
           const force = (config.mouseRadius - distance) / config.mouseRadius
           particle.vx += (dx / distance) * force * 0.2
           particle.vy += (dy / distance) * force * 0.2
@@ -104,7 +130,7 @@ export default function ParticleNetwork() {
         // Draw particle
         ctx.beginPath()
         ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2)
-        ctx.fillStyle = config.particleColor
+        ctx.fillStyle = colorsRef.particle
         ctx.fill()
 
         // Draw connections to nearby particles
@@ -119,9 +145,11 @@ export default function ParticleNetwork() {
             ctx.beginPath()
             ctx.moveTo(particle.x, particle.y)
             ctx.lineTo(other.x, other.y)
-            ctx.strokeStyle = config.lineColor.replace('0.35', String(opacity * 0.35))
+            ctx.globalAlpha = opacity
+            ctx.strokeStyle = colorsRef.line
             ctx.lineWidth = 1
             ctx.stroke()
+            ctx.globalAlpha = 1
           }
         }
 
@@ -132,28 +160,26 @@ export default function ParticleNetwork() {
           ctx.beginPath()
           ctx.moveTo(particle.x, particle.y)
           ctx.lineTo(mouse.x, mouse.y)
-          ctx.strokeStyle = config.mouseLineColor.replace('0.4', String(opacity * 0.4))
+          ctx.globalAlpha = opacity
+          ctx.strokeStyle = colorsRef.mouse
           ctx.lineWidth = 1
           ctx.stroke()
+          ctx.globalAlpha = 1
         }
       })
-
-      requestAnimationFrame(animate)
     }
 
     // Start animation
-    animate()
+    rafId = requestAnimationFrame(animate)
 
     // Event listeners
     window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('resize', () => {
-      setCanvasSize()
-      initParticles()
-    })
+    window.addEventListener('resize', handleResize)
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('resize', setCanvasSize)
+      window.removeEventListener('resize', handleResize)
+      cancelAnimationFrame(rafId)
     }
   }, [])
 
@@ -172,3 +198,4 @@ export default function ParticleNetwork() {
     />
   )
 }
+
