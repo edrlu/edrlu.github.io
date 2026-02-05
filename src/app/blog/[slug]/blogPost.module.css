@@ -4,7 +4,7 @@
 
 .header {
   padding-bottom: 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.55);
+  border-bottom: 1px solid var(--divider);
   margin-bottom: 18px;
 }
 
@@ -90,7 +90,7 @@
   margin: 18px 0;
   padding: 14px 14px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.55);
+  border: 1px solid var(--divider);
   background: transparent;
   overflow-x: auto;
 }

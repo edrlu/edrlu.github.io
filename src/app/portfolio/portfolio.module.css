@@ -14,7 +14,7 @@
 
 .header {
   padding-bottom: 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.55);
+  border-bottom: 1px solid var(--divider);
   margin-bottom: 18px;
 }
 
@@ -40,7 +40,7 @@
 
 .project {
   padding: 14px 0 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.55);
+  border-bottom: 1px solid var(--divider);
 }
 
 .projectTop {
@@ -86,7 +86,7 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   padding: 6px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.55);
+  border: 1px solid var(--divider);
   border-radius: 999px;
   opacity: 0.8;
 }
@@ -95,7 +95,7 @@
   margin-top: 12px;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.55);
+  border: 1px solid var(--divider);
 }
 
 .projectImage :global(img) {

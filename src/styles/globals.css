@@ -49,7 +49,7 @@
 }
 
 :root {
-  --c-bg: hsl(0 0% 95%);
+  --c-bg: hsl(46 36% 96%);
   --c-text: hsl(0 0% 9%);
   --c-muted: hsl(0 0% 40%);
   --c-faint: hsl(0 0% 60%);
@@ -61,6 +61,7 @@
   --panel-bg: hsl(0 0% 100% / 0.92);
   --panel-text: hsl(0 0% 8%);
   --inner: max(16px, 3vmin);
+  --divider: hsl(0 0% 0% / 0.14);
 
   --pad: max(18px, 4vmin);
   --radius: 14px;
@@ -83,7 +84,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --c-bg: hsl(0 0% 5%);
+    --c-bg: hsl(220 14% 8%);
     --c-text: hsl(0 0% 96%);
     --c-muted: hsl(0 0% 68%);
     --c-faint: hsl(0 0% 52%);
@@ -91,6 +92,7 @@
     --c-card: hsl(0 0% 10% / 0.55);
     --panel-bg: hsl(0 0% 10% / 0.92);
     --panel-text: hsl(0 0% 96%);
+    --divider: hsl(0 0% 100% / 0.18);
 
     --shadow: 0 18px 60px hsl(0 0% 0% / 0.5);
 
@@ -101,7 +103,7 @@
 }
 
 html[data-theme='light'] {
-  --c-bg: hsl(0 0% 95%);
+  --c-bg: hsl(46 36% 96%);
   --c-text: hsl(0 0% 9%);
   --c-muted: hsl(0 0% 40%);
   --c-faint: hsl(0 0% 60%);
@@ -111,10 +113,11 @@ html[data-theme='light'] {
   --fx-particle: hsl(0 0% 0% / 0.42);
   --fx-line: hsl(0 0% 0% / 0.2);
   --fx-mouse: hsl(0 0% 0% / 0.24);
+  --divider: hsl(0 0% 0% / 0.14);
 }
 
 html[data-theme='dark'] {
-  --c-bg: hsl(0 0% 5%);
+  --c-bg: hsl(220 14% 8%);
   --c-text: hsl(0 0% 96%);
   --c-muted: hsl(0 0% 68%);
   --c-faint: hsl(0 0% 52%);
@@ -126,6 +129,7 @@ html[data-theme='dark'] {
   --fx-particle: hsl(0 0% 100% / 0.42);
   --fx-line: hsl(0 0% 100% / 0.2);
   --fx-mouse: hsl(0 0% 100% / 0.24);
+  --divider: hsl(0 0% 100% / 0.18);
 }
 
 *,
@@ -145,11 +149,7 @@ body {
   font-size: var(--fs-0);
   line-height: 1.45;
   color: var(--c-text);
-  background:
-    linear-gradient(180deg, hsl(0 0% 100% / 0.5), transparent 40%),
-    radial-gradient(1100px 720px at 18% 12%, hsl(354 74% 44% / 0.06), transparent 62%),
-    radial-gradient(1100px 720px at 82% 88%, hsl(215 70% 44% / 0.05), transparent 65%),
-    var(--c-bg);
+  background: var(--c-bg);
   min-height: 100svh;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
@@ -192,6 +192,50 @@ button:focus-visible {
   pointer-events: none;
 }
 
+.backgroundPaper {
+  position: absolute;
+  inset: -12%;
+  opacity: 0.65;
+  background-image:
+    linear-gradient(115deg, hsl(0 0% 100% / 0.6), transparent 55%),
+    linear-gradient(295deg, hsl(0 0% 0% / 0.035), transparent 60%),
+    repeating-linear-gradient(
+      135deg,
+      hsl(0 0% 0% / 0.04) 0px,
+      hsl(0 0% 0% / 0.04) 1px,
+      transparent 1px,
+      transparent 26px
+    ),
+    repeating-linear-gradient(
+      45deg,
+      hsl(0 0% 0% / 0.022) 0px,
+      hsl(0 0% 0% / 0.022) 1px,
+      transparent 1px,
+      transparent 44px
+    );
+}
+
+html[data-theme='dark'] .backgroundPaper {
+  opacity: 0.35;
+  background-image:
+    linear-gradient(115deg, hsl(0 0% 100% / 0.06), transparent 55%),
+    linear-gradient(295deg, hsl(0 0% 0% / 0.45), transparent 60%),
+    repeating-linear-gradient(
+      135deg,
+      hsl(0 0% 100% / 0.05) 0px,
+      hsl(0 0% 100% / 0.05) 1px,
+      transparent 1px,
+      transparent 26px
+    ),
+    repeating-linear-gradient(
+      45deg,
+      hsl(0 0% 100% / 0.03) 0px,
+      hsl(0 0% 100% / 0.03) 1px,
+      transparent 1px,
+      transparent 44px
+    );
+}
+
 .backgroundGlow {
   position: absolute;
   inset: -20%;
@@ -199,6 +243,11 @@ button:focus-visible {
   background: radial-gradient(closest-side at 28% 20%, hsl(354 74% 44% / 0.09), transparent 62%),
     radial-gradient(closest-side at 78% 80%, hsl(215 70% 44% / 0.07), transparent 66%);
   filter: blur(20px) saturate(105%);
+}
+
+html[data-theme='dark'] .backgroundGlow {
+  opacity: 0.22;
+  filter: blur(24px) saturate(95%);
 }
 
 .grain {
@@ -437,7 +486,7 @@ button:focus-visible {
 
 .contentPanelLeft {
   padding: 22px 18px;
-  border-right: 1px solid rgba(255, 255, 255, 0.55);
+  border-right: 1px solid var(--divider);
   display: grid;
   align-content: start;
   gap: 12px;
@@ -473,7 +522,7 @@ button:focus-visible {
 
   .contentPanelLeft {
     border-right: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.55);
+    border-bottom: 1px solid var(--divider);
   }
 }
 
