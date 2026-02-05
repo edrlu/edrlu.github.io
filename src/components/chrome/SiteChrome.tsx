@@ -42,7 +42,7 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
                 GitHub
               </a>
               <a
-                href="https://www.linkedin.com/in/edward-lu-a68aa724b/"
+                href="https://www.linkedin.com/in/edward-lu04/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -62,4 +62,3 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
     </>
   )
 }
-

@@ -1,29 +1,17 @@
-import Image from 'next/image'
 import Link from 'next/link'
-import type { CSSProperties } from 'react'
 import styles from './portfolio.module.css'
+import PortfolioClient, { type PortfolioCardData, type PortfolioDetail } from './portfolioClient'
 
-type Card = {
-  title: string
-  subtitle: string
-  metaLeft: string
-  metaRight: string
-  href?: string
-  imageSrc?: string
-  imageAlt?: string
-  mediaHeight?: number
-}
-
-const projectCards: Card[] = [
+const projectCards: PortfolioCardData[] = [
   {
     title: 'Beryl',
     subtitle: 'A calendar-first stopwatch tracker with recurrence and SQLite persistence.',
     metaLeft: 'Personal project',
     metaRight: '2024–2025',
-    href: 'https://github.com/edrlu/beryl',
     imageSrc: '/gallery/beryl-demo.png',
     imageAlt: 'Beryl demo screenshot',
     mediaHeight: 320,
+    action: { kind: 'detail', id: 'beryl' },
   },
   {
     title: 'Insider Correlation Toolkit',
@@ -34,31 +22,31 @@ const projectCards: Card[] = [
     imageSrc: '/gallery/insider-correlation-analysis.png',
     imageAlt: 'Insider correlation analysis plot',
     mediaHeight: 240,
+    action: { kind: 'detail', id: 'insider' },
   },
   {
     title: 'Coach',
     subtitle: 'Visual analytics and tooling for map-state interpretation and replay artifacts.',
     metaLeft: 'ML / visualization',
     metaRight: '2025',
-    href: '/portfolio/coach-replay',
     imageSrc: '/gallery/coach-map.jpeg',
     imageAlt: 'Coach map visualization',
     mediaHeight: 410,
+    action: { kind: 'internal', href: '/portfolio/coach-replay' },
   },
 ]
 
-const researchCards: Card[] = [
+const researchCards: PortfolioCardData[] = [
   {
     title:
-      'Hydrogen sulfide ameliorates peritoneal fibrosis: inhibition of HMGB1 to block TGF-\u03B2/Smad3 activation',
-    subtitle:
-      'Peritoneal fibrosis pathways: HMGB1 and TGF-\u03B2/Smad3 signaling (open access).',
+      'Hydrogen sulfide ameliorates peritoneal fibrosis: inhibition of HMGB1 to block TGF-β/Smad3 activation',
+    subtitle: 'Peritoneal fibrosis pathways: HMGB1 and TGF-β/Smad3 signaling (open access).',
     metaLeft: 'Publication',
     metaRight: 'PMCID',
-    href: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC12413889/',
     imageSrc: '/gallery/paper1-affiliation.png',
     imageAlt: 'Evidence of affiliation screenshot',
     mediaHeight: 285,
+    action: { kind: 'external', href: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC12413889/' },
   },
   {
     title:
@@ -66,66 +54,53 @@ const researchCards: Card[] = [
     subtitle: 'DNA repair and resistance via lncRNA interactions (PubMed).',
     metaLeft: 'Publication',
     metaRight: 'PubMed',
-    href: 'https://pubmed.ncbi.nlm.nih.gov/37775817/',
+    imageSrc: '/gallery/paper2.png',
+    imageAlt: 'Publication screenshot',
     mediaHeight: 210,
+    action: { kind: 'external', href: 'https://pubmed.ncbi.nlm.nih.gov/37775817/' },
   },
 ]
 
-function PortfolioCard({ card }: { card: Card }) {
-  const isLink = Boolean(card.href)
-  const isInternal = Boolean(card.href?.startsWith('/'))
-
-  const mediaStyle = {
-    ['--media-h' as string]: `${Math.max(180, card.mediaHeight ?? 260)}px`,
-  } as CSSProperties
-
-  const inner = (
-    <div className={styles.cardInner} style={mediaStyle}>
-      <div className={styles.cardMedia} aria-hidden="true">
-        {card.imageSrc ? (
-          <Image
-            src={card.imageSrc}
-            alt={card.imageAlt ?? ''}
-            fill
-            sizes="(max-width: 820px) 100vw, 50vw"
-            style={{ objectFit: 'cover' }}
-            priority={false}
-          />
-        ) : (
-          <div className={styles.cardMediaFallback} />
-        )}
-      </div>
-
-      <div className={styles.cardCaption}>
-        <div className={styles.cardMeta}>
-          <span>{card.metaLeft}</span>
-          <span aria-hidden="true">{'\u00B7'}</span>
-          <span>{card.metaRight}</span>
-        </div>
-        <div className={styles.cardTitle}>{card.title}</div>
-        <div className={styles.cardSubtitle}>{card.subtitle}</div>
-      </div>
-    </div>
-  )
-
-  if (!isLink || !card.href) {
-    return <div className={styles.card}>{inner}</div>
-  }
-
-  if (isInternal) {
-    return (
-      <Link className={`${styles.card} ${styles.cardLink}`} href={card.href}>
-        {inner}
-      </Link>
-    )
-  }
-
-  return (
-    <a className={`${styles.card} ${styles.cardLink}`} href={card.href} target="_blank" rel="noopener noreferrer">
-      {inner}
-    </a>
-  )
-}
+const details: PortfolioDetail[] = [
+  {
+    id: 'beryl',
+    title: 'Beryl',
+    meta: 'Personal project · 2024–2025',
+    summary:
+      'A calendar-first stopwatch tracker that makes time logging feel like a daily workflow: quick starts, laps, recurrence, and persistence.',
+    bullets: [
+      'Calendar-first home: pick a day → see all timers for that date.',
+      'Stopwatch UX: start/stop, laps with editable labels, freeze/read-only mode.',
+      'Recurrence/pinning: one timer can appear across multiple dates with range rules.',
+      'Persistence via SQLite + Prisma; state survives refreshes.',
+      'Designed for speed: minimal clicks, legible structure, predictable interactions.',
+    ],
+    links: [{ label: 'GitHub', href: 'https://github.com/edrlu/beryl' }],
+    images: [
+      { src: '/gallery/beryl-demo.png', alt: 'Beryl UI overview' },
+      { src: '/gallery/beryl-analytics.png', alt: 'Beryl analytics' },
+    ],
+  },
+  {
+    id: 'insider',
+    title: 'Insider Correlation Toolkit',
+    meta: 'Research tooling · 2025–2026',
+    summary:
+      'A research sandbox for measuring whether insider purchases correlate with forward returns, plus small backtesting experiments.',
+    bullets: [
+      'Forward-return features: +7d, +14d, +30d with skip rules when future data is missing.',
+      'Nearest-close matching within a fixed tolerance window for filing dates.',
+      'Aggregate metrics: sample size, mean/median returns, win rate, bucketed distributions.',
+      'Backtest variants with slippage scenarios to stress assumptions.',
+      'Built for iteration: quick reruns, clear outputs, and artifacts you can compare.',
+    ],
+    links: [],
+    images: [
+      { src: '/gallery/insider-correlation-analysis.png', alt: 'Correlation analysis plot' },
+      { src: '/gallery/insider-backtest-1d.png', alt: 'Backtest results (1d slippage)' },
+    ],
+  },
+]
 
 export default function Portfolio() {
   return (
@@ -148,23 +123,7 @@ export default function Portfolio() {
         </aside>
 
         <div className="contentPanelRight">
-          <section id="projects" className={styles.block} aria-label="Projects">
-            <div className={styles.blockTitle}>Projects</div>
-            <div className={styles.cardMasonry}>
-              {projectCards.map((card) => (
-                <PortfolioCard key={card.title} card={card} />
-              ))}
-            </div>
-          </section>
-
-          <section id="research" className={styles.block} aria-label="Research">
-            <div className={styles.blockTitle}>Research</div>
-            <div className={styles.cardMasonry}>
-              {researchCards.map((card) => (
-                <PortfolioCard key={card.title} card={card} />
-              ))}
-            </div>
-          </section>
+          <PortfolioClient projectCards={projectCards} researchCards={researchCards} details={details} />
         </div>
       </div>
     </section>

@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { useEffect, useMemo, useState } from 'react'
 
 type Theme = 'light' | 'dark'
@@ -47,15 +46,10 @@ export default function ThemeToggle() {
             applyTheme(opt.value)
           }}
         >
-          <span className={opt.value === 'light' ? 'themeIcon themeIconLight' : 'themeIcon themeIconDark'}>
-            <Image
-              src="/images/crane.png"
-              alt=""
-              width={16}
-              height={16}
-              priority={false}
-            />
-          </span>
+          <span
+            className={opt.value === 'light' ? 'themeDot themeDotLight' : 'themeDot themeDotDark'}
+            aria-hidden="true"
+          />
           <span className="themeLabel">{opt.label}</span>
         </button>
       ))}

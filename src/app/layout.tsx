@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Edward Lu - Portfolio',
   description: 'Statistics & Data Science | UC Berkeley',
   icons: {
-    icon: '/favicon.ico',
+    icon: '/images/crane.png',
   },
 }
 
