@@ -12,10 +12,6 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
 
   return (
     <>
-      <a className="skipLink" href="#content">
-        Skip to content
-      </a>
-
       <SiteBackground />
       <div className="grain" aria-hidden="true" />
 
@@ -26,7 +22,9 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
               <Link className="siteTitleLink" href="/">
                 Edward Lu
               </Link>
-              <div className="siteTitleMeta">Statistics &amp; Data Science · UC Berkeley</div>
+              <div className="siteTitleMeta">
+                Statistics &amp; Data Science {'\u00B7'} UC Berkeley
+              </div>
             </div>
             <SiteNav />
           </header>
@@ -64,3 +62,4 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
     </>
   )
 }
+

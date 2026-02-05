@@ -2,6 +2,12 @@
   padding-top: 26px;
 }
 
+.inner {
+  max-width: 780px;
+  margin: 0 auto;
+  padding-inline: 10px;
+}
+
 .header {
   padding-bottom: 18px;
   border-bottom: 1px solid var(--divider);
@@ -26,6 +32,7 @@
 .content {
   font-size: 16px;
   line-height: 1.75;
+  opacity: 0.85;
 }
 
 .sideMeta {
@@ -88,9 +95,38 @@
 
 .formula {
   margin: 18px 0;
-  padding: 14px 14px;
-  border-radius: 12px;
-  border: 1px solid var(--divider);
+  padding: 0;
+  border-radius: 0;
+  border: 0;
   background: transparent;
-  overflow-x: auto;
+  overflow: visible;
+}
+
+.code {
+  margin: 16px 0 18px;
+  padding: 14px 14px;
+  border: 1px solid var(--divider);
+  background: color-mix(in srgb, var(--c-card), transparent 45%);
+  border-radius: 10px;
+  overflow: auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.55;
+  scrollbar-width: thin;
+  scrollbar-color: var(--divider) transparent;
+}
+
+.code::-webkit-scrollbar {
+  height: 10px;
+}
+
+.code::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.code::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--divider), transparent 35%);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }

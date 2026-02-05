@@ -1,36 +1,131 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import type { CSSProperties } from 'react'
 import styles from './portfolio.module.css'
 
-const projects = [
+type Card = {
+  title: string
+  subtitle: string
+  metaLeft: string
+  metaRight: string
+  href?: string
+  imageSrc?: string
+  imageAlt?: string
+  mediaHeight?: number
+}
+
+const projectCards: Card[] = [
   {
-    title: 'Options Sentiment Agent',
-    description:
-      'Deep learning model using Stochastic-depth Residual Bi-GRU to predict optimal options trading opportunities from market data and sentiment analysis. Applied advanced training techniques including label smoothing, focal loss, and Stochastic Weight Averaging for robust convergence on imbalanced financial datasets.',
-    tech: ['PyTorch', 'Python', 'Deep Learning', 'Bi-GRU', 'Sentiment Analysis'],
-    link: 'https://github.com/edrlu',
-    image: '/images/train_graphs.png',
-    imageSize: { width: 1678, height: 584 },
+    title: 'Beryl',
+    subtitle: 'A calendar-first stopwatch tracker with recurrence and SQLite persistence.',
+    metaLeft: 'Personal project',
+    metaRight: '2024–2025',
+    href: 'https://github.com/edrlu/beryl',
+    imageSrc: '/gallery/beryl-demo.png',
+    imageAlt: 'Beryl demo screenshot',
+    mediaHeight: 320,
   },
   {
-    title: 'Custom Mail Intelligence Platform',
-    description:
-      'Intelligent email management system integrating Google OAuth 2.0, Gemini API, and Ollama for natural language processing. Automatically categorizes emails with 95% accuracy, provides smart summarization and priority scoring. Processes over 300 emails per minute with Next.js frontend and FastAPI backend.',
-    tech: ['FastAPI', 'Next.js', 'Google OAuth 2.0', 'Gemini API', 'Ollama', 'NLP'],
-    link: 'https://github.com/edrlu/gmail-organizer',
-    image: '/images/custom_mail_platform.png',
-    imageSize: { width: 1592, height: 508 },
+    title: 'Insider Correlation Toolkit',
+    subtitle:
+      'Insider-trade correlation analysis with forward returns (+7d/+14d/+30d) and backtesting experiments.',
+    metaLeft: 'Research tooling',
+    metaRight: '2025–2026',
+    imageSrc: '/gallery/insider-correlation-analysis.png',
+    imageAlt: 'Insider correlation analysis plot',
+    mediaHeight: 240,
   },
   {
-    title: 'Biomedical Research',
-    description:
-      'Data analytics and statistical analysis for colorectal cancer resistance and mesothelial cell damage research. Processed genomic datasets, conducted bioinformatics analysis on RNA sequencing data. Contributed to 2 peer-reviewed publications in Clinical Cancer Research and Journal of Translational Medicine.',
-    tech: ['Python', 'Pandas', 'Bioinformatics', 'RNA Sequencing', 'Statistical Analysis'],
-    link: 'https://github.com/edrlu',
-    image: '/images/research_full.png',
-    imageSize: { width: 839, height: 574 },
+    title: 'Coach',
+    subtitle: 'Visual analytics and tooling for map-state interpretation and replay artifacts.',
+    metaLeft: 'ML / visualization',
+    metaRight: '2025',
+    href: '/portfolio/coach-replay',
+    imageSrc: '/gallery/coach-map.jpeg',
+    imageAlt: 'Coach map visualization',
+    mediaHeight: 410,
   },
 ]
+
+const researchCards: Card[] = [
+  {
+    title:
+      'Hydrogen sulfide ameliorates peritoneal fibrosis: inhibition of HMGB1 to block TGF-\u03B2/Smad3 activation',
+    subtitle:
+      'Peritoneal fibrosis pathways: HMGB1 and TGF-\u03B2/Smad3 signaling (open access).',
+    metaLeft: 'Publication',
+    metaRight: 'PMCID',
+    href: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC12413889/',
+    imageSrc: '/gallery/paper1-affiliation.png',
+    imageAlt: 'Evidence of affiliation screenshot',
+    mediaHeight: 285,
+  },
+  {
+    title:
+      'ATR-binding lncRNA ScaRNA2 promotes cancer resistance through facilitating efficient DNA end resection during homologous recombination repair',
+    subtitle: 'DNA repair and resistance via lncRNA interactions (PubMed).',
+    metaLeft: 'Publication',
+    metaRight: 'PubMed',
+    href: 'https://pubmed.ncbi.nlm.nih.gov/37775817/',
+    mediaHeight: 210,
+  },
+]
+
+function PortfolioCard({ card }: { card: Card }) {
+  const isLink = Boolean(card.href)
+  const isInternal = Boolean(card.href?.startsWith('/'))
+
+  const mediaStyle = {
+    ['--media-h' as string]: `${Math.max(180, card.mediaHeight ?? 260)}px`,
+  } as CSSProperties
+
+  const inner = (
+    <div className={styles.cardInner} style={mediaStyle}>
+      <div className={styles.cardMedia} aria-hidden="true">
+        {card.imageSrc ? (
+          <Image
+            src={card.imageSrc}
+            alt={card.imageAlt ?? ''}
+            fill
+            sizes="(max-width: 820px) 100vw, 50vw"
+            style={{ objectFit: 'cover' }}
+            priority={false}
+          />
+        ) : (
+          <div className={styles.cardMediaFallback} />
+        )}
+      </div>
+
+      <div className={styles.cardCaption}>
+        <div className={styles.cardMeta}>
+          <span>{card.metaLeft}</span>
+          <span aria-hidden="true">{'\u00B7'}</span>
+          <span>{card.metaRight}</span>
+        </div>
+        <div className={styles.cardTitle}>{card.title}</div>
+        <div className={styles.cardSubtitle}>{card.subtitle}</div>
+      </div>
+    </div>
+  )
+
+  if (!isLink || !card.href) {
+    return <div className={styles.card}>{inner}</div>
+  }
+
+  if (isInternal) {
+    return (
+      <Link className={`${styles.card} ${styles.cardLink}`} href={card.href}>
+        {inner}
+      </Link>
+    )
+  }
+
+  return (
+    <a className={`${styles.card} ${styles.cardLink}`} href={card.href} target="_blank" rel="noopener noreferrer">
+      {inner}
+    </a>
+  )
+}
 
 export default function Portfolio() {
   return (
@@ -38,53 +133,38 @@ export default function Portfolio() {
       <div className="contentPanelGrid">
         <aside className="contentPanelLeft">
           <Link className={styles.backLink} href="/">
-            ← Back
+            {'\u2190'} Back
           </Link>
           <h1 className="contentPanelTitle">Portfolio</h1>
+          <nav className={styles.outline} aria-label="Outline">
+            <div className={styles.outlineTitle}>Outline</div>
+            <a className={styles.outlineLink} href="#projects">
+              Projects
+            </a>
+            <a className={styles.outlineLink} href="#research">
+              Research
+            </a>
+          </nav>
         </aside>
 
         <div className="contentPanelRight">
-          <div className={styles.header}>
-            <h2 className={styles.title}>Selected projects</h2>
-            <p className={styles.subtitle}>
-              Deep learning, NLP, and full‑stack systems — focused on clarity, performance, and measurable impact.
-            </p>
-          </div>
+          <section id="projects" className={styles.block} aria-label="Projects">
+            <div className={styles.blockTitle}>Projects</div>
+            <div className={styles.cardMasonry}>
+              {projectCards.map((card) => (
+                <PortfolioCard key={card.title} card={card} />
+              ))}
+            </div>
+          </section>
 
-          <div className={styles.projects} aria-label="Projects">
-            {projects.map((project) => (
-              <article key={project.title} className={styles.project}>
-                <div className={styles.projectTop}>
-                  <h3 className={styles.projectTitle}>{project.title}</h3>
-                  <a href={project.link} target="_blank" rel="noopener noreferrer" className={styles.projectLink}>
-                    View ↗
-                  </a>
-                </div>
-
-                <p className={styles.projectDescription}>{project.description}</p>
-
-                <div className={styles.techStack} aria-label="Tech stack">
-                  {project.tech.map((tech) => (
-                    <span key={tech} className={styles.tech}>
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-
-                {project.image && (
-                  <div className={styles.projectImage}>
-                    <Image
-                      src={project.image}
-                      alt={project.title}
-                      width={project.imageSize.width}
-                      height={project.imageSize.height}
-                      sizes="(max-width: 820px) 100vw, 860px"
-                    />
-                  </div>
-                )}
-              </article>
-            ))}
-          </div>
+          <section id="research" className={styles.block} aria-label="Research">
+            <div className={styles.blockTitle}>Research</div>
+            <div className={styles.cardMasonry}>
+              {researchCards.map((card) => (
+                <PortfolioCard key={card.title} card={card} />
+              ))}
+            </div>
+          </section>
         </div>
       </div>
     </section>

@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useEffect, useMemo, useState } from 'react'
 
 type Theme = 'light' | 'dark'
@@ -11,12 +12,11 @@ function applyTheme(theme: Theme) {
 }
 
 function getInitialTheme(): Theme {
-  const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)')?.matches
-  return prefersDark ? 'dark' : 'light'
+  return 'dark'
 }
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>('light')
+  const [theme, setTheme] = useState<Theme>('dark')
 
   useEffect(() => {
     const stored = localStorage.getItem(storageKey)
@@ -47,7 +47,15 @@ export default function ThemeToggle() {
             applyTheme(opt.value)
           }}
         >
-          <span className="themeBox" aria-hidden="true" />
+          <span className={opt.value === 'light' ? 'themeIcon themeIconLight' : 'themeIcon themeIconDark'}>
+            <Image
+              src="/images/crane.png"
+              alt=""
+              width={16}
+              height={16}
+              priority={false}
+            />
+          </span>
           <span className="themeLabel">{opt.label}</span>
         </button>
       ))}

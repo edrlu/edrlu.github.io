@@ -10,6 +10,16 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'invite-scheduling',
+    title: 'Invite Scheduling: Filling 50 Slots Under Uncertainty',
+    excerpt:
+      'A practical way to think about an interview-invite challenge as risk-aware optimization: expected acceptances, response-time distributions, and a simple policy that balances speed, quality, and cancellations.',
+    date: 'Oct 30, 2025',
+    readTime: '10 min read',
+    category: 'Optimization',
+    hasMath: true,
+  },
+  {
     slug: 'entropy',
     title: 'Cross Entropy: A Brief Mathematical Breakdown',
     excerpt:

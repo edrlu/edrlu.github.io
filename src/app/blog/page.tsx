@@ -2,62 +2,64 @@ import Link from 'next/link'
 import { blogPosts } from '@/lib/blogPosts'
 import styles from './blog.module.css'
 
-export default function Blog() {
-  // Group posts by year
-  const postsByYear = blogPosts.reduce((acc, post) => {
-    const year = new Date(post.date).getFullYear().toString()
-    if (!acc[year]) {
-      acc[year] = []
-    }
-    acc[year].push(post)
-    return acc
-  }, {} as Record<string, typeof blogPosts>)
+type YearGroup = { year: string; posts: typeof blogPosts }
 
-  // Sort years in descending order
-  const sortedYears = Object.keys(postsByYear).sort((a, b) => Number(b) - Number(a))
+function groupByYear(): YearGroup[] {
+  const sorted = [...blogPosts].sort((a, b) => +new Date(b.date) - +new Date(a.date))
+  const map = new Map<string, typeof blogPosts>()
 
-  // Format date to "Mon DD," format
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).replace(' ', ' ') + ','
+  for (const post of sorted) {
+    const year = String(new Date(post.date).getFullYear())
+    const list = map.get(year) ?? []
+    list.push(post)
+    map.set(year, list)
   }
+
+  return [...map.entries()].map(([year, posts]) => ({ year, posts }))
+}
+
+export default function BlogIndex() {
+  const groups = groupByYear()
 
   return (
     <section className="contentPanel" aria-label="Blog">
       <div className="contentPanelGrid">
         <aside className="contentPanelLeft">
           <Link className={styles.backLink} href="/">
-            ← Back
+            {'\u2190'} Back
           </Link>
           <h1 className="contentPanelTitle">Blog</h1>
+          <div className="contentPanelHint">Notes on math, systems, and product engineering.</div>
         </aside>
 
         <div className="contentPanelRight">
-          {sortedYears.map((year) => (
-            <section key={year} className={styles.section}>
-              <h2 className={styles.year}>{year}</h2>
-
-              <div className={styles.posts}>
-                {postsByYear[year].map((post) => (
-                  <Link key={post.slug} href={`/blog/${post.slug}`} className={styles.post}>
-                    <div className={styles.postTop}>
-                      <time className={styles.date}>{formatDate(post.date)}</time>
-                      <span className={styles.postMeta}>{post.readTime}</span>
-                    </div>
-                    <h3 className={styles.postTitle}>{post.title}</h3>
-                    <div className={styles.postBottom}>
-                      <span className={styles.postCategory}>{post.category}</span>
-                      <span className={styles.postArrow} aria-hidden="true">
-                        →
-                      </span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          ))}
+          <div className={styles.inner}>
+            {groups.map((group) => (
+              <section key={group.year} className={styles.section} aria-label={group.year}>
+                <div className={styles.year}>{group.year}</div>
+                <div className={styles.posts}>
+                  {group.posts.map((post) => (
+                    <Link key={post.slug} href={`/blog/${post.slug}`} className={styles.post}>
+                      <div className={styles.postTop}>
+                        <div className={styles.date}>{post.date}</div>
+                        <div className={styles.postMeta}>{post.category}</div>
+                      </div>
+                      <div className={styles.postTitle}>{post.title}</div>
+                      <div className={styles.postBottom}>
+                        <div>{post.readTime}</div>
+                        <div className={styles.postArrow} aria-hidden="true">
+                          {'\u2192'}
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
         </div>
       </div>
     </section>
   )
 }
+

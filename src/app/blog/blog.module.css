@@ -12,6 +12,12 @@
   opacity: 1;
 }
 
+.inner {
+  max-width: 780px;
+  margin: 0 auto;
+  padding-inline: 10px;
+}
+
 .section + .section {
   margin-top: 26px;
   padding-top: 26px;
