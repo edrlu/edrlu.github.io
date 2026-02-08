@@ -107,7 +107,7 @@ export default function Portfolio() {
     <section className="contentPanel" aria-label="Portfolio">
       <div className="contentPanelGrid">
         <aside className="contentPanelLeft">
-          <Link className={styles.backLink} href="/">
+          <Link className={styles.backLink} href="/portfolio">
             {'\u2190'} Back
           </Link>
           <h1 className="contentPanelTitle">Portfolio</h1>
