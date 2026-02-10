@@ -10,6 +10,16 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'normal-area-confidence-intervals',
+    title: 'From \u03c6 to \u03a6: Area Under the Curve and Confidence Intervals',
+    excerpt:
+      'An interactive visualization for the standard normal PDF \u03c6 and CDF \u03a6: see why P(a \u2264 Z \u2264 b) is an area, how midpoint sums converge to an integral, and how the same picture yields two-sided confidence intervals.',
+    date: 'Feb 10, 2026',
+    readTime: '7 min read',
+    category: 'Statistics',
+    hasMath: true,
+  },
+  {
     slug: 'invite-scheduling',
     title: 'Invite Scheduling: Filling 50 Slots Under Uncertainty',
     excerpt:

@@ -9,6 +9,13 @@ declare global {
       startup?: {
         promise?: Promise<void>
       }
+      tex?: {
+        inlineMath?: string[][]
+        displayMath?: string[][]
+      }
+      options?: {
+        skipHtmlTags?: string[]
+      }
     }
   }
 }
@@ -21,13 +28,30 @@ export default function MathJaxProvider({ children }: MathJaxProviderProps) {
   useEffect(() => {
     // Load MathJax script if not already loaded
     if (!window.MathJax) {
+      // Configure before loading so inline $...$ works.
+      window.MathJax = {
+        tex: {
+          inlineMath: [
+            ['$', '$'],
+            ['\\(', '\\)'],
+          ],
+          displayMath: [
+            ['$$', '$$'],
+            ['\\[', '\\]'],
+          ],
+        },
+        options: {
+          skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        },
+      }
+
       const script = document.createElement('script')
       script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
       script.async = true
       script.id = 'MathJax-script'
 
       script.onload = () => {
-        // Configure MathJax after it loads
+        // Configure MathJax after it loads (startup promise hook).
         window.MathJax = {
           ...window.MathJax,
           startup: {
@@ -43,6 +67,24 @@ export default function MathJaxProvider({ children }: MathJaxProviderProps) {
       document.head.appendChild(script)
     } else {
       // If MathJax is already loaded, just typeset the content
+      window.MathJax = {
+        ...window.MathJax,
+        tex: {
+          inlineMath: [
+            ['$', '$'],
+            ['\\(', '\\)'],
+          ],
+          displayMath: [
+            ['$$', '$$'],
+            ['\\[', '\\]'],
+          ],
+          ...window.MathJax.tex,
+        },
+        options: {
+          skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+          ...window.MathJax.options,
+        },
+      }
       window.MathJax.typesetPromise?.()
     }
   }, [])

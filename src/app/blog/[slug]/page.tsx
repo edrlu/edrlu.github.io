@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { getAllBlogSlugs, getBlogPost } from '@/lib/blogPosts'
 import { notFound } from 'next/navigation'
 import MathJaxProvider from '@/components/blog/MathJaxProvider'
+import NormalAreaAnimator from '@/components/blog/NormalAreaAnimator'
 import styles from './blogPost.module.css'
 
 export async function generateStaticParams() {
@@ -276,6 +277,96 @@ function EntropyPost() {
   )
 }
 
+function NormalAreaConfidenceIntervalsPost() {
+  return (
+    <MathJaxProvider>
+      <article className={styles.article}>
+        <p>
+          This post is a response to a note I left myself: make an animation for the standard normal PDF {'$\\phi$'} and
+          CDF {'$\\Phi$'} that makes the area interpretation feel concrete, including how to “split the probability” to
+          get a two-sided confidence interval.
+        </p>
+
+        <NormalAreaAnimator />
+
+        <h2>Setup</h2>
+        <p>{'Let $Z \\sim \\mathcal{N}(0,1)$.'}</p>
+        <ul>
+          <li>
+            {'$\\phi(z)$'} is the <em>PDF</em> (a density, not a PMF):
+            <div className={styles.formula}>{'$$\\phi(z)=\\frac{1}{\\sqrt{2\\pi}}e^{-z^2/2}$$'}</div>
+          </li>
+          <li>
+            {'$\\Phi(z)$'} is the CDF:
+            <div className={styles.formula}>{'$$\\Phi(z)=\\mathbb{P}(Z\\le z)=\\int_{-\\infty}^{z}\\phi(t)\\,dt$$'}</div>
+          </li>
+        </ul>
+
+        <h2>Area as probability</h2>
+        <p>
+          The key picture is that probabilities for continuous random variables are <em>areas under the density</em>:
+        </p>
+        <div className={styles.formula}>
+          {'$$\\mathbb{P}(a\\le Z\\le b)=\\int_a^b \\phi(z)\\,dz=\\Phi(b)-\\Phi(a)$$'}
+        </div>
+        <p>
+          In “Area” mode above, the red region is the integral (the true area under the curve), while the blue bars are
+          a midpoint Riemann sum approximation with {'$n$'} rectangles:
+        </p>
+        <div className={styles.formula}>
+          {'$$\\int_a^b\\phi(z)\\,dz\\;\\approx\\;\\sum_{i=1}^{n}\\phi(z_i^*)\\,\\Delta z$$'}
+        </div>
+        <p>Press Play and watch the rectangles converge to the true area as {'$n$'} grows.</p>
+
+        <h2>Splitting for a two-sided confidence interval</h2>
+        <p>
+          For a two-sided confidence level {'$1-\\alpha$'}, you want the <em>central</em> probability mass to be {'$1-\\alpha$'},
+          leaving {'$\\alpha/2$'} in each tail:
+        </p>
+        <div className={styles.formula}>
+          {
+            '$$\\mathbb{P}(-z_{1-\\alpha/2}\\le Z\\le z_{1-\\alpha/2})=1-\\alpha,\\qquad z_{1-\\alpha/2}=\\Phi^{-1}(1-\\alpha/2)$$'
+          }
+        </div>
+
+        <h2>Where does 1.96 come from?</h2>
+        <p>
+          The number {'$1.96$'} is a <em>quantile</em> of the standard normal. For a common choice {'$\\alpha=0.05$'} (a
+          95% two-sided interval), we want {'$\\alpha/2=0.025$'} in the upper tail, which means the middle mass is
+          0.95:
+        </p>
+        <div className={styles.formula}>{'$$\\mathbb{P}(Z\\le z)=0.975\\quad\\Longleftrightarrow\\quad z=\\Phi^{-1}(0.975)$$'}</div>
+        <p>
+          There isn&apos;t an elementary closed-form expression for {'$\\Phi^{-1}$'}, so {'$z$'} is computed numerically
+          (or read from a Z-table). Evaluating {'$\\Phi^{-1}(0.975)$'} gives:
+        </p>
+        <div className={styles.formula}>{'$$\\Phi^{-1}(0.975)\\approx 1.959963984\\;\\approx\\;1.96$$'}</div>
+        <p>
+          (In the animation above, the {'$z$'} value is found by numerically inverting {'$\\Phi$'} via a simple bisection
+          search. Try “Quantile” mode and set {'$p=0.975$'} to see {'$z\\approx 1.96$'} appear.)
+        </p>
+        <p>
+          More generally, when someone writes something like {'$z_{1-\\alpha/2}$'}, it means: pick{' '}
+          {'$p=1-\\alpha/2$'} and take {'$z=\\Phi^{-1}(p)$'}. In the widget, you can either adjust confidence (CI mode)
+          or adjust {'$p$'} directly (Quantile mode) and watch the cutoff move.
+        </p>
+        <p>
+          In “Confidence Interval” mode, the shaded center region is {'$1-\\alpha$'} and the faint tails represent {'$\\alpha/2$'} on
+          each side.
+        </p>
+
+        <h2>Back to a general normal</h2>
+        <p>
+          If {'$X\\sim \\mathcal{N}(\\mu,\\sigma^2)$'}, standardize with {'$Z=(X-\\mu)/\\sigma$'} and reuse the same picture:
+        </p>
+        <div className={styles.formula}>
+          {'$$\\mathbb{P}(\\mu-z\\sigma\\le X\\le \\mu+z\\sigma)=\\mathbb{P}(-z\\le Z\\le z)=1-\\alpha$$'}
+        </div>
+      </article>
+    </MathJaxProvider>
+  )
+}
+
 export default async function BlogPost({ params }: BlogPostPageProps) {
   const { slug } = await params
   const post = getBlogPost(slug)
@@ -285,7 +376,9 @@ export default async function BlogPost({ params }: BlogPostPageProps) {
   }
 
   const content =
-    slug === 'invite-scheduling' ? (
+    slug === 'normal-area-confidence-intervals' ? (
+      <NormalAreaConfidenceIntervalsPost />
+    ) : slug === 'invite-scheduling' ? (
       <InviteSchedulingPost />
     ) : slug === 'entropy' ? (
       <EntropyPost />
@@ -324,4 +417,3 @@ export default async function BlogPost({ params }: BlogPostPageProps) {
     </section>
   )
 }
-
