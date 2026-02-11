@@ -3,6 +3,7 @@ import { getAllBlogSlugs, getBlogPost } from '@/lib/blogPosts'
 import { notFound } from 'next/navigation'
 import MathJaxProvider from '@/components/blog/MathJaxProvider'
 import NormalAreaAnimator from '@/components/blog/NormalAreaAnimator'
+import MomentsVisualizer from '@/components/blog/MomentsVisualizer'
 import styles from './blogPost.module.css'
 
 export async function generateStaticParams() {
@@ -367,6 +368,29 @@ function NormalAreaConfidenceIntervalsPost() {
   )
 }
 
+function VisualizingMomentsPost() {
+  return (
+    <MathJaxProvider>
+      <article className={styles.article}>
+        <h2>What is a moment?</h2>
+        <p>
+          A (raw) moment is an expectation of a power: {'$\\mathbb{E}[X^k]$'}. For small {'$k$'}, moments capture things like mean
+          ({'$k=1$'}) and scale ({'$k=2$'}). Higher-order moments react strongly to tails and asymmetry.
+        </p>
+
+        <h2>Interactive intuition</h2>
+        <ul>
+          <li>Choose a distribution and compare exact moments to a Monte Carlo estimate.</li>
+          <li>Increase {'$k$'} to see how quickly tails dominate (especially for Exponential).</li>
+          <li>Switch between linear and log scaling to keep large moments readable.</li>
+        </ul>
+
+        <MomentsVisualizer />
+      </article>
+    </MathJaxProvider>
+  )
+}
+
 export default async function BlogPost({ params }: BlogPostPageProps) {
   const { slug } = await params
   const post = getBlogPost(slug)
@@ -380,6 +404,8 @@ export default async function BlogPost({ params }: BlogPostPageProps) {
       <NormalAreaConfidenceIntervalsPost />
     ) : slug === 'invite-scheduling' ? (
       <InviteSchedulingPost />
+    ) : slug === 'visualizing-moments' ? (
+      <VisualizingMomentsPost />
     ) : slug === 'entropy' ? (
       <EntropyPost />
     ) : (

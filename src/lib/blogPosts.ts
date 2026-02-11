@@ -1,10 +1,16 @@
+export type BlogCollection = 'blog' | 'education'
+export type EducationArea = 'statistics' | 'machine-learning'
+
 export interface BlogPost {
   slug: string
   title: string
   excerpt: string
   date: string
   readTime: string
-  category: string
+  collection: BlogCollection
+  area?: EducationArea
+  imageSrc?: string
+  imageAlt?: string
   hasMath?: boolean
 }
 
@@ -16,7 +22,10 @@ export const blogPosts: BlogPost[] = [
       'An interactive visualization for the standard normal PDF \u03c6 and CDF \u03a6: see why P(a \u2264 Z \u2264 b) is an area, how midpoint sums converge to an integral, and how the same picture yields two-sided confidence intervals.',
     date: 'Feb 10, 2026',
     readTime: '7 min read',
-    category: 'Statistics',
+    collection: 'education',
+    area: 'statistics',
+    imageSrc: '/gallery/blog-normal-area.svg',
+    imageAlt: 'Normal distribution visualization cover',
     hasMath: true,
   },
   {
@@ -26,7 +35,9 @@ export const blogPosts: BlogPost[] = [
       'A practical way to think about an interview-invite challenge as risk-aware optimization: expected acceptances, response-time distributions, and a simple policy that balances speed, quality, and cancellations.',
     date: 'Oct 30, 2025',
     readTime: '10 min read',
-    category: 'Optimization',
+    collection: 'blog',
+    imageSrc: '/gallery/blog-invites.svg',
+    imageAlt: 'Scheduling and uncertainty cover',
     hasMath: true,
   },
   {
@@ -36,7 +47,23 @@ export const blogPosts: BlogPost[] = [
       'An in-depth exploration of cross entropy loss functions, their mathematical foundations, and why they\'re fundamental to modern machine learning optimization.',
     date: 'Mar 15, 2025',
     readTime: '8 min read',
-    category: 'Machine Learning Math',
+    collection: 'education',
+    area: 'machine-learning',
+    imageSrc: '/gallery/blog-entropy.svg',
+    imageAlt: 'Cross entropy visualization cover',
+    hasMath: true,
+  },
+  {
+    slug: 'visualizing-moments',
+    title: 'Visualizing Moments: E[X^k] as Shape',
+    excerpt:
+      'An interactive widget to build intuition for raw moments E[X^k] across distributions: watch how higher-order moments react to tails, asymmetry, and scale.',
+    date: 'Feb 10, 2026',
+    readTime: '6 min read',
+    collection: 'education',
+    area: 'statistics',
+    imageSrc: '/gallery/blog-moments.svg',
+    imageAlt: 'Moment bar chart cover',
     hasMath: true,
   },
 ]

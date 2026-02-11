@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 
-type Theme = 'light' | 'dark'
+type Theme = 'light' | 'dark' | 'paper'
 
 const storageKey = 'theme'
 
@@ -19,7 +19,7 @@ export default function ThemeToggle() {
 
   useEffect(() => {
     const stored = localStorage.getItem(storageKey)
-    const next: Theme = stored === 'dark' || stored === 'light' ? stored : getInitialTheme()
+    const next: Theme = stored === 'dark' || stored === 'light' || stored === 'paper' ? stored : getInitialTheme()
     setTheme(next)
     applyTheme(next)
   }, [])
@@ -27,9 +27,10 @@ export default function ThemeToggle() {
   const options = useMemo(
     () =>
       [
-        { value: 'light' as const, label: 'Light' },
-        { value: 'dark' as const, label: 'Dark' },
-      ] satisfies Array<{ value: Theme; label: string }>,
+        { value: 'light' as const, label: 'Light theme', dotClass: 'themeDotLight' },
+        { value: 'dark' as const, label: 'Dark theme', dotClass: 'themeDotDark' },
+        { value: 'paper' as const, label: 'Parchment theme', dotClass: 'themeDotPaper' },
+      ] satisfies Array<{ value: Theme; label: string; dotClass: string }>,
     [],
   )
 
@@ -40,17 +41,16 @@ export default function ThemeToggle() {
           key={opt.value}
           type="button"
           className={theme === opt.value ? 'themeBtn isSelected' : 'themeBtn'}
+          aria-label={opt.label}
+          title={opt.label}
+          aria-pressed={theme === opt.value}
           onClick={() => {
             setTheme(opt.value)
             localStorage.setItem(storageKey, opt.value)
             applyTheme(opt.value)
           }}
         >
-          <span
-            className={opt.value === 'light' ? 'themeDot themeDotLight' : 'themeDot themeDotDark'}
-            aria-hidden="true"
-          />
-          <span className="themeLabel">{opt.label}</span>
+          <span className={`themeDot ${opt.dotClass}`} aria-hidden="true" />
         </button>
       ))}
     </div>
