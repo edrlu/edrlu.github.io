@@ -9,7 +9,7 @@ import styles from './portfolio.module.css'
 type CardAction =
   | { kind: 'detail'; id: string }
   | { kind: 'internal'; href: string }
-  | { kind: 'external'; href: string }
+  | { kind: 'external'; href: string; notice?: string }
 
 export type PortfolioCardData = {
   title: string
@@ -88,7 +88,17 @@ function Card({ card, onSelect }: { card: PortfolioCardData; onSelect: (id: stri
   }
 
   return (
-    <a className={`${styles.card} ${styles.cardLink}`} href={card.action.href} target="_blank" rel="noopener noreferrer">
+    <a
+      className={`${styles.card} ${styles.cardLink}`}
+      href={card.action.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={() => {
+        if (card.action.kind === 'external' && card.action.notice) {
+          window.alert(card.action.notice)
+        }
+      }}
+    >
       {inner}
     </a>
   )

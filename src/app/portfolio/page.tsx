@@ -46,7 +46,12 @@ const researchCards: PortfolioCardData[] = [
     imageSrc: '/gallery/paper1-affiliation.png',
     imageAlt: 'Evidence of affiliation screenshot',
     mediaHeight: 285,
-    action: { kind: 'external', href: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC12413889/' },
+    action: {
+      kind: 'external',
+      href: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC12413889/',
+      notice:
+        'Note: my name is not listed as an author because I did not accept the affiliation; my contribution was limited to data processing.',
+    },
   },
   {
     title:
