@@ -4,6 +4,16 @@ import PortfolioClient, { type PortfolioCardData, type PortfolioDetail } from '.
 
 const projectCards: PortfolioCardData[] = [
   {
+    title: 'Fly Brain Replay (CartPole)',
+    subtitle: 'Standalone replay of a connectome-inspired CartPole controller with brain activity diagnostics.',
+    metaLeft: 'Neuroscience / RL',
+    metaRight: 'Interactive HTML',
+    imageSrc: '/gallery/flybrain-cartpole.png',
+    imageAlt: 'Fly Brain CartPole replay screenshot',
+    mediaHeight: 300,
+    action: { kind: 'internal', href: '/portfolio/flybrain-cartpole' },
+  },
+  {
     title: 'Beryl',
     subtitle: 'A calendar-first stopwatch tracker with recurrence and SQLite persistence.',
     metaLeft: 'Personal project',
