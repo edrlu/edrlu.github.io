@@ -16,7 +16,7 @@
 .outlineTitle,
 .detailMeta,
 .detailSectionTitle {
-  font-family: var(--font-alt);
+  font-family: var(--font-display);
   font-size: clamp(22px, 1.7vw, 30px);
   line-height: 1;
   color: var(--red-pencil);
@@ -27,7 +27,7 @@
 .detailLink {
   display: inline-block;
   width: max-content;
-  font-family: var(--font-alt);
+  font-family: var(--font-display);
   font-size: clamp(24px, 1.9vw, 27px);
   line-height: 1;
   color: var(--ink-soft);
@@ -52,7 +52,7 @@
 
 .blockTitle {
   margin-bottom: 16px;
-  font-family: var(--font-alt);
+  font-family: var(--font-display);
   font-size: clamp(36px, 3.2vw, 50px);
   line-height: 0.9;
   color: var(--red-pencil);
@@ -90,6 +90,7 @@
   position: relative;
   display: inline-block;
   width: 100%;
+  font-family: var(--font-display);
   break-inside: avoid;
   margin: 0 0 30px;
   padding: 0;
@@ -178,7 +179,7 @@
   gap: 8px;
   align-items: baseline;
   flex-wrap: wrap;
-  font-family: var(--font-alt);
+  font-family: var(--font-display);
   font-size: clamp(19px, 1.45vw, 23px);
   line-height: 1;
   color: var(--red-pencil);
@@ -198,7 +199,6 @@
 }
 
 .card:nth-child(2n) .cardTitle {
-  font-family: var(--font-alt);
   transform: rotate(0.55deg) skewX(0.4deg);
 }
 
@@ -224,6 +224,7 @@
 
 .detail {
   padding: 4px 2px 34px;
+  font-family: var(--font-display);
   transform: rotate(0.15deg);
 }
 
