@@ -18,6 +18,7 @@ export type PortfolioCardData = {
   metaRight: string
   imageSrc?: string
   imageAlt?: string
+  imagePosition?: string
   mediaHeight?: number
   action: CardAction
 }
@@ -50,7 +51,7 @@ function Card({ card, onSelect }: { card: PortfolioCardData; onSelect: (id: stri
             alt={card.imageAlt ?? ''}
             fill
             sizes="(max-width: 820px) 100vw, 50vw"
-            style={{ objectFit: 'cover' }}
+            style={{ objectFit: 'cover', objectPosition: card.imagePosition ?? 'center' }}
             priority={false}
           />
         ) : (
@@ -157,10 +158,12 @@ function DetailView({
 }
 
 export default function PortfolioClient({
+  experienceCards,
   projectCards,
   researchCards,
   details,
 }: {
+  experienceCards: PortfolioCardData[]
   projectCards: PortfolioCardData[]
   researchCards: PortfolioCardData[]
   details: PortfolioDetail[]
@@ -195,6 +198,15 @@ export default function PortfolioClient({
 
   return (
     <>
+      <section id="experiences" className={styles.block} aria-label="Experiences">
+        <div className={styles.blockTitle}>Experiences</div>
+        <div className={styles.experienceGrid}>
+          {experienceCards.map((card) => (
+            <Card key={card.title} card={card} onSelect={onSelect} />
+          ))}
+        </div>
+      </section>
+
       <section id="projects" className={styles.block} aria-label="Projects">
         <div className={styles.blockTitle}>Projects</div>
         <div className={styles.cardMasonry}>

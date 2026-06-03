@@ -2,6 +2,53 @@ import Link from 'next/link'
 import styles from './portfolio.module.css'
 import PortfolioClient, { type PortfolioCardData, type PortfolioDetail } from './portfolioClient'
 
+const experienceCards: PortfolioCardData[] = [
+  {
+    title: 'Data & QA Intern @ Noitom Robotics',
+    subtitle: 'Robotics data quality work for embodied intelligence and motion-driven systems.',
+    metaLeft: 'Experience',
+    metaRight: 'Robotics',
+    imageSrc: '/gallery/experience-noitom.png',
+    imageAlt: 'Noitom Robotics landing page screenshot',
+    imagePosition: 'left center',
+    mediaHeight: 320,
+    action: { kind: 'external', href: 'https://noitomrobotics.com/' },
+  },
+  {
+    title: 'SWE @ Operis',
+    subtitle: 'Software engineering work for context-aware AI workflow infrastructure.',
+    metaLeft: 'Experience',
+    metaRight: 'AI tools',
+    imageSrc: '/gallery/experience-operis.png',
+    imageAlt: 'Operis landing page screenshot',
+    imagePosition: 'center top',
+    mediaHeight: 300,
+    action: { kind: 'external', href: 'https://operis.tech/' },
+  },
+  {
+    title: 'Data Entry @ The Marcus Harris Foundation',
+    subtitle: 'Data entry support for a community-focused nonprofit organization.',
+    metaLeft: 'Experience',
+    metaRight: 'Nonprofit',
+    imageSrc: '/gallery/experience-mhf.png',
+    imageAlt: 'The Marcus Harris Foundation landing page screenshot',
+    imagePosition: 'center top',
+    mediaHeight: 300,
+    action: { kind: 'external', href: 'https://marcusharrisfoundation.org/' },
+  },
+  {
+    title: 'Researcher @ Cell Tech Lab',
+    subtitle: 'Research support for laboratory products and biology-facing workflows.',
+    metaLeft: 'Experience',
+    metaRight: 'Biotech',
+    imageSrc: '/gallery/experience-cell-tech-lab.png',
+    imageAlt: 'Cell Tech Lab landing page screenshot',
+    imagePosition: 'left top',
+    mediaHeight: 280,
+    action: { kind: 'external', href: 'https://www.clt-us.com/' },
+  },
+]
+
 const projectCards: PortfolioCardData[] = [
   {
     title: 'Fly Brain Replay (CartPole)',
@@ -128,6 +175,9 @@ export default function Portfolio() {
           <h1 className="contentPanelTitle">Portfolio</h1>
           <nav className={styles.outline} aria-label="Outline">
             <div className={styles.outlineTitle}>Outline</div>
+            <a className={styles.outlineLink} href="#experiences">
+              Experiences
+            </a>
             <a className={styles.outlineLink} href="#projects">
               Projects
             </a>
@@ -138,7 +188,12 @@ export default function Portfolio() {
         </aside>
 
         <div className="contentPanelRight">
-          <PortfolioClient projectCards={projectCards} researchCards={researchCards} details={details} />
+          <PortfolioClient
+            experienceCards={experienceCards}
+            projectCards={projectCards}
+            researchCards={researchCards}
+            details={details}
+          />
         </div>
       </div>
     </section>
