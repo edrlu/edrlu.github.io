@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hand-Pose Annotation - Internal Pipeline Report</title>
+<style>
+  :root{
+    --page: #fbfaf7;
+    --paper: #fffefa;
+    --ink: #1f252b;
+    --muted: #65717d;
+    --rule: #d9d4cb;
+    --rule-strong: #aaa296;
+    --mediapipe: #8b949e;
+    --hybrid: #dd6f93;
+    --mano: #6aa1ff;
+    --somastacks: #d99a2b;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  *{box-sizing:border-box}
+  html{background:var(--page)}
+  body{
+    margin:0;
+    background:var(--page);
+    color:var(--ink);
+    font:15px/1.6 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit}
+  .page{
+    width:min(820px, calc(100% - 36px));
+    margin:34px auto 42px;
+    padding:44px 48px 36px;
+    background:var(--paper);
+    border:1px solid var(--rule);
+    box-shadow:0 18px 45px rgb(31 37 43 / 8%);
+  }
+  .top-link{
+    display:inline-block;
+    margin-bottom:26px;
+    color:var(--muted);
+    font-size:13px;
+    font-weight:650;
+    text-decoration:none;
+  }
+  .top-link:hover{text-decoration:underline}
+  header{
+    padding-bottom:24px;
+    border-bottom:1px solid var(--rule-strong);
+  }
+  h1{
+    margin:0;
+    max-width:720px;
+    font-family:Georgia, "Times New Roman", serif;
+    font-size:34px;
+    line-height:1.12;
+    font-weight:600;
+    letter-spacing:0;
+  }
+  .subline{
+    margin:12px 0 0;
+    color:var(--muted);
+    font-size:14px;
+  }
+  section{
+    padding:24px 0;
+    border-bottom:1px solid var(--rule);
+  }
+  section:last-of-type{border-bottom:0}
+  h2{
+    margin:0 0 10px;
+    font-size:12px;
+    line-height:1.2;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+  p{
+    margin:0;
+    max-width:710px;
+  }
+  p + p{margin-top:10px}
+  .muted{color:var(--muted)}
+  .note{
+    color:var(--muted);
+    font-size:14px;
+  }
+  table{
+    width:100%;
+    margin:14px 0 10px;
+    border-collapse:collapse;
+    table-layout:fixed;
+    border-top:1px solid var(--rule-strong);
+    border-bottom:1px solid var(--rule-strong);
+  }
+  th,
+  td{
+    padding:9px 8px;
+    border-bottom:1px solid var(--rule);
+    text-align:left;
+    vertical-align:middle;
+  }
+  tr:last-child td{border-bottom:0}
+  th{
+    color:var(--muted);
+    font-size:11px;
+    font-weight:750;
+    letter-spacing:.07em;
+    text-transform:uppercase;
+  }
+  td{
+    font-size:14px;
+  }
+  td.value{
+    font-family:var(--mono);
+    font-variant-numeric:tabular-nums;
+  }
+  .model{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    min-width:0;
+  }
+  .swatch{
+    width:9px;
+    height:9px;
+    flex:0 0 auto;
+    border-radius:2px;
+    background:var(--swatch);
+  }
+  .flow{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:14px 0 16px;
+  }
+  .step{
+    display:inline-flex;
+    align-items:center;
+    min-height:30px;
+    padding:5px 9px;
+    border:1px solid var(--rule);
+    background:#fff;
+    color:#30363d;
+    font-family:var(--mono);
+    font-size:12px;
+    white-space:nowrap;
+  }
+  .arrow{
+    align-self:center;
+    color:var(--muted);
+    font-family:var(--mono);
+    font-size:12px;
+  }
+  .schema{
+    margin:8px 0 0;
+    padding-left:20px;
+    columns:2;
+    column-gap:34px;
+  }
+  .schema li{
+    break-inside:avoid;
+    margin:0 0 7px;
+    font-family:var(--mono);
+    font-size:12px;
+    line-height:1.45;
+  }
+  footer{
+    padding-top:18px;
+    border-top:1px solid var(--rule-strong);
+    color:var(--muted);
+    font-family:var(--mono);
+    font-size:12px;
+  }
+
+  @media (max-width:680px){
+    .page{
+      width:100%;
+      margin:0;
+      padding:26px 22px 28px;
+      border-left:0;
+      border-right:0;
+      box-shadow:none;
+    }
+    h1{font-size:28px}
+    table{table-layout:auto}
+    .schema{columns:1}
+    .step{white-space:normal}
+  }
+  @media print{
+    html,
+    body{background:#fff}
+    .page{
+      width:auto;
+      margin:0;
+      padding:0;
+      border:0;
+      box-shadow:none;
+    }
+    .top-link{display:none}
+    section{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+  <main class="page">
+    <a class="top-link" href="index.html">&lt;- Dashboard</a>
+
+    <header>
+      <h1>Hand-Pose Annotation - Internal Pipeline Report</h1>
+      <p class="subline">Egocentric clip 695026376e - 1920x1440 - 30s window (frames 350-1249) - 4 pipelines compared</p>
+    </header>
+
+    <section>
+      <p>We built an internal hand-pose annotation pipeline to reduce dependence on paid SomaStacks annotation. This report compares four pipelines on the same clip across coverage, ground-truth accuracy, and temporal stability, and states where each one wins.</p>
+      <p>The dashboard provides the visual check: the same 30-second window, synchronized across all four rendered overlays.</p>
+    </section>
+
+    <section>
+      <h2>Part One - Coverage</h2>
+      <p>Share of frames a hand is tracked; higher is not the same as better landmarks.</p>
+      <table>
+        <thead>
+          <tr><th>Model</th><th>Any</th><th>Both</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="model"><span class="swatch" style="--swatch:var(--mediapipe)"></span>MediaPipe</span></td>
+            <td class="value">55%</td>
+            <td class="value">38%</td>
+          </tr>
+          <tr>
+            <td><span class="model"><span class="swatch" style="--swatch:var(--hybrid)"></span>WiLoR-hybrid</span></td>
+            <td class="value">82%</td>
+            <td class="value">75%</td>
+          </tr>
+          <tr>
+            <td><span class="model"><span class="swatch" style="--swatch:var(--mano)"></span>WiLoR-MANO</span></td>
+            <td class="value">72%</td>
+            <td class="value">50%</td>
+          </tr>
+          <tr>
+            <td><span class="model"><span class="swatch" style="--swatch:var(--somastacks)"></span>SomaStacks</span></td>
+            <td class="value">73%</td>
+            <td class="value">62%</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="note">The hybrid finds the most hands; MANO and SomaStacks are more conservative.</p>
+    </section>
+
+    <section>
+      <h2>Part Two - Accuracy vs Ground Truth</h2>
+      <p>The Noitom headset records its own on-device 26-joint hand tracking. We project it into the image, calibrated to ~23px, and measure our 2D landmark error: a real accuracy metric, unlike coverage. SomaStacks clips have no independent GT, so this is measured on the Noitom session.</p>
+      <table>
+        <thead>
+          <tr><th>Model</th><th>Median px err</th><th>PCK@0.2</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="model"><span class="swatch" style="--swatch:var(--mediapipe)"></span>MediaPipe</span></td>
+            <td class="value">30.1px</td>
+            <td class="value">52%</td>
+          </tr>
+          <tr>
+            <td><span class="model"><span class="swatch" style="--swatch:var(--hybrid)"></span>WiLoR-hybrid</span></td>
+            <td class="value">29.0px</td>
+            <td class="value">49%</td>
+          </tr>
+          <tr>
+            <td><span class="model"><span class="swatch" style="--swatch:var(--mano)"></span>WiLoR-MANO</span></td>
+            <td class="value">28.2px</td>
+            <td class="value">47%</td>
+          </tr>
+          <tr>
+            <td><span class="model"><span class="swatch" style="--swatch:var(--somastacks)"></span>SomaStacks</span></td>
+            <td class="value">n/a</td>
+            <td class="value">n/a</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="note">On easy near-field data all internal pipelines are ~28-30px, so they are comparable; the mesh model does not help much there.</p>
+    </section>
+
+    <section>
+      <h2>Part Three - Temporal Stability</h2>
+      <p>Jitter is on-screen high-frequency noise in pixels around the smoothed trajectory; lower means steadier.</p>
+      <table>
+        <thead>
+          <tr><th>Model</th><th>Jitter px</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="model"><span class="swatch" style="--swatch:var(--mediapipe)"></span>MediaPipe</span></td>
+            <td class="value">2.1px</td>
+          </tr>
+          <tr>
+            <td><span class="model"><span class="swatch" style="--swatch:var(--hybrid)"></span>WiLoR-hybrid</span></td>
+            <td class="value">1.8px</td>
+          </tr>
+          <tr>
+            <td><span class="model"><span class="swatch" style="--swatch:var(--mano)"></span>WiLoR-MANO</span></td>
+            <td class="value">3.4px</td>
+          </tr>
+          <tr>
+            <td><span class="model"><span class="swatch" style="--swatch:var(--somastacks)"></span>SomaStacks</span></td>
+            <td class="value">3.1px</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="note">Low jitter can be misleading: MediaPipe and hybrid look steady partly because they smooth over misplaced landmarks.</p>
+      <p>The endorsed WiLoR-MANO was originally ~17-20px jitter; after root-relative plus stronger finger smoothing it is now 3.4px, matching SomaStacks at 3.1px: clean and steady.</p>
+    </section>
+
+    <section>
+      <h2>Part Four - Landmark Quality</h2>
+      <p>On hard motion-blur frames, WiLoR-MANO draws clean anatomical skeletons on par with SomaStacks, while the hybrid catches more hands but draws them roughly and MediaPipe misses most. This is the visual axis; use the dashboard for the frame-by-frame comparison.</p>
+    </section>
+
+    <section>
+      <h2>Methodology - The Endorsed Pipeline</h2>
+      <div class="flow" aria-label="Pipeline flow">
+        <span class="step">WiLoR YOLO detector</span><span class="arrow">-&gt;</span>
+        <span class="step">WiLoR ViT</span><span class="arrow">-&gt;</span>
+        <span class="step">MANO mesh</span><span class="arrow">-&gt;</span>
+        <span class="step">temporal smoothing</span><span class="arrow">-&gt;</span>
+        <span class="step">HDF5 export</span><span class="arrow">-&gt;</span>
+        <span class="step">QC overlay</span>
+      </div>
+      <p class="muted">HDF5 schema matching the SomaStacks contract:</p>
+      <ul class="schema">
+        <li>camera/intrinsic</li>
+        <li>camera/extrinsic_w2c</li>
+        <li>transforms/camera</li>
+        <li>mediapipe21/{joints,is_right,visibility,confidence}</li>
+        <li>pose6d/{wrist_position,wrist_rotation_matrix,wrist_quaternion}</li>
+        <li>mano/{global_orient,hand_pose,betas,transl,is_right,visibility}</li>
+        <li>meta/{frame_indices,timestamps}</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Verdict / Recommendation</h2>
+      <p>No single model wins every axis: hybrid has the best coverage, while WiLoR-MANO has the best landmark quality and now matches SomaStacks stability. Recommended next step: feed WiLoR-MANO's reconstruction with the hybrid's more aggressive detector to lift coverage while keeping quality; optional temporal motion prior (HMP) for further stability.</p>
+    </section>
+
+    <footer>noitom_handpose - internal - generated 2026-06-29</footer>
+  </main>
+</body>
+</html>

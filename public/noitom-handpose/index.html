@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hand-Pose Models - 4-up</title>
+<style>
+  :root{
+    --canvas: hsl(0 0% 4.3%);
+    --surface-100: hsl(0 0% 7.5%);
+    --surface-200: hsl(0 0% 10.2%);
+    --border: hsl(0 0% 15.5%);
+    --border-muted: hsl(0 0% 11%);
+    --border-strong: hsl(0 0% 20%);
+    --fg: hsl(0 0% 92%);
+    --fg-light: hsl(0 0% 65%);
+    --fg-lighter: hsl(0 0% 45%);
+    --fg-muted: hsl(0 0% 36%);
+    --mediapipe: #8b949e;
+    --hybrid: #dd6f93;
+    --mano: #6aa1ff;
+    --somastacks: #d99a2b;
+    --brand-link: #ef9fb8;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --radius: 8px;
+    --radius-md: 6px;
+  }
+
+  *{box-sizing:border-box}
+  html,
+  body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:var(--canvas);
+  }
+  body{
+    margin:0;
+    color:var(--fg);
+    font:14px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:geometricPrecision;
+  }
+  button,
+  input{font:inherit}
+  a{color:inherit}
+  .sr-only{
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
+  }
+  .micro,
+  .btn,
+  .speed button,
+  th{
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.07em;
+    text-transform:uppercase;
+  }
+  .mono,
+  .meta,
+  .stat,
+  .time,
+  .speed button,
+  td.value{
+    font-family:var(--mono);
+    font-variant-numeric:tabular-nums;
+  }
+
+  .app{
+    width:100vw;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    background:var(--canvas);
+  }
+  .topbar{
+    flex:0 0 44px;
+    min-height:44px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:0 14px;
+    border-bottom:1px solid var(--border-muted);
+    background:var(--canvas);
+  }
+  .title{
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size:15px;
+    font-weight:600;
+    color:var(--fg);
+  }
+  .top-actions{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    min-width:0;
+  }
+  .meta{
+    color:var(--fg-lighter);
+    font-size:12px;
+    white-space:nowrap;
+  }
+  .report-link{
+    flex:0 0 auto;
+    color:var(--brand-link);
+    font-size:12px;
+    font-weight:600;
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  .report-link:hover{text-decoration:underline}
+
+  .stage{
+    flex:1 1 auto;
+    min-height:0;
+    display:flex;
+    gap:10px;
+    padding:10px;
+    overflow:hidden;
+  }
+  .video-grid{
+    flex:1 1 auto;
+    min-width:0;
+    min-height:0;
+    display:grid;
+    grid-template-columns:minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows:minmax(0, 1fr) minmax(0, 1fr);
+    gap:10px;
+  }
+  .panel,
+  .metrics,
+  .transport{
+    background:var(--surface-100);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+  }
+  .panel{
+    min-width:0;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .panel-head{
+    flex:0 0 34px;
+    min-height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:0 10px;
+    border-bottom:1px solid var(--border-muted);
+  }
+  .model{
+    flex:1 1 auto;
+    min-width:0;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    color:var(--fg-light);
+    font-size:12.5px;
+    font-weight:600;
+  }
+  .model-name{
+    flex:0 0 auto;
+    overflow:visible;
+    text-overflow:clip;
+    white-space:nowrap;
+  }
+  .role-chip{
+    flex:0 0 auto;
+    display:inline-flex;
+    align-items:center;
+    height:18px;
+    padding:0 6px;
+    border:1px solid var(--border-strong);
+    border-radius:999px;
+    color:var(--fg-lighter);
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.08em;
+    line-height:1;
+    text-transform:uppercase;
+    white-space:nowrap;
+  }
+  .role-chip.brand{
+    border-color:color-mix(in srgb, var(--hybrid) 70%, transparent);
+    color:var(--hybrid);
+  }
+  .role-chip.endorsed{
+    border-color:color-mix(in srgb, var(--mano) 78%, transparent);
+    background:color-mix(in srgb, var(--mano) 12%, transparent);
+    color:#9cc0ff;
+  }
+  .role-chip.amber{
+    border-color:color-mix(in srgb, var(--somastacks) 76%, transparent);
+    color:var(--somastacks);
+  }
+  .swatch{
+    width:9px;
+    height:9px;
+    flex:0 0 auto;
+    border-radius:2px;
+    background:var(--swatch);
+  }
+  .stat{
+    flex:0 1 auto;
+    min-width:0;
+    color:var(--fg-muted);
+    font-size:10.5px;
+  }
+  .video-wrap{
+    flex:1 1 auto;
+    min-height:0;
+    display:flex;
+    background:#000;
+  }
+  video{
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    background:#000;
+  }
+
+  .metrics{
+    flex:0 0 360px;
+    width:360px;
+    min-height:0;
+    height:100%;
+    max-height:100%;
+    align-self:stretch;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .metrics-inner{
+    flex:1 1 auto;
+    min-height:0;
+    height:100%;
+    overflow-x:hidden;
+    overflow-y:auto;
+    padding:10px 12px 11px;
+    scrollbar-width:thin;
+    scrollbar-color:var(--border-strong) transparent;
+  }
+  .metrics-inner::-webkit-scrollbar{
+    width:6px;
+  }
+  .metrics-inner::-webkit-scrollbar-track{
+    background:transparent;
+  }
+  .metrics-inner::-webkit-scrollbar-thumb{
+    background:var(--border-strong);
+    border-radius:999px;
+  }
+  .metrics-title{
+    margin:0 0 8px;
+    color:var(--fg);
+    font-size:12.5px;
+    font-weight:600;
+  }
+  .role-legend{
+    margin:-4px 0 9px;
+    color:var(--fg-lighter);
+    font-size:11px;
+    line-height:1.25;
+  }
+  .metric-block + .metric-block{
+    margin-top:10px;
+  }
+  .metric-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:4px;
+  }
+  .metric-head h3{
+    margin:0;
+    color:var(--fg-light);
+    font-size:11.5px;
+    font-weight:600;
+  }
+  .note{
+    margin:0 0 5px;
+    color:var(--fg-lighter);
+    font-size:10.5px;
+    line-height:1.25;
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+    border-top:1px solid var(--border-muted);
+    border-bottom:1px solid var(--border-muted);
+  }
+  th,
+  td{
+    height:25px;
+    padding:0 6px;
+    border-bottom:1px solid var(--border-muted);
+  }
+  tr:last-child td{border-bottom:0}
+  th{
+    color:var(--fg-muted);
+    text-align:right;
+  }
+  th:first-child{text-align:left}
+  td{
+    color:var(--fg-light);
+    font-size:11.5px;
+  }
+  td.value{
+    color:var(--fg);
+    text-align:right;
+    font-size:11.5px;
+  }
+  .model-cell{
+    min-width:0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .model-cell span:last-child{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .read{
+    margin:10px 0 0;
+    padding:0;
+    list-style:none;
+    color:var(--fg-lighter);
+    font-size:10.5px;
+    line-height:1.3;
+  }
+  .read li + li{margin-top:4px}
+
+  .transport{
+    flex:0 0 60px;
+    min-height:60px;
+    display:grid;
+    grid-template-columns:auto auto minmax(180px, 1fr) auto auto;
+    align-items:center;
+    gap:10px;
+    margin:0 10px 10px;
+    padding:10px;
+  }
+  .btn{
+    min-height:34px;
+    padding:0 12px;
+    cursor:pointer;
+    background:transparent;
+    border:1px solid var(--border-strong);
+    color:var(--fg-light);
+    border-radius:var(--radius-md);
+  }
+  .btn:hover,
+  .speed button:hover{
+    background:var(--surface-200);
+    color:var(--fg);
+  }
+  .play-toggle{
+    border-left-color:var(--hybrid);
+    border-left-width:2px;
+    color:var(--fg);
+  }
+  .scrub{
+    position:relative;
+    width:100%;
+    height:4px;
+    background:var(--border-strong);
+  }
+  .seek-fill{
+    position:absolute;
+    inset:0 auto 0 0;
+    width:0%;
+    background:var(--hybrid);
+    pointer-events:none;
+  }
+  .seek{
+    position:absolute;
+    inset:-5px 0;
+    width:100%;
+    height:14px;
+    border:0;
+    border-radius:0;
+    cursor:pointer;
+    outline:none;
+    appearance:none;
+    -webkit-appearance:none;
+    background:transparent;
+  }
+  .seek::-webkit-slider-thumb{
+    appearance:none;
+    -webkit-appearance:none;
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    background:var(--fg);
+    border:1px solid var(--canvas);
+  }
+  .seek::-moz-range-thumb{
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    background:var(--fg);
+    border:1px solid var(--canvas);
+  }
+  .time{
+    min-width:104px;
+    color:var(--fg-light);
+    text-align:right;
+    font-size:12px;
+  }
+  .speed{
+    display:flex;
+    overflow:hidden;
+    border:1px solid var(--border-strong);
+    border-radius:var(--radius-md);
+  }
+  .speed button{
+    min-height:32px;
+    min-width:38px;
+    padding:0 8px;
+    color:var(--fg-muted);
+    cursor:pointer;
+    background:transparent;
+    border:0;
+  }
+  .speed button + button{border-left:1px solid var(--border-strong)}
+  .speed button.active{
+    background:var(--surface-200);
+    color:var(--brand-link);
+  }
+
+  @media (max-width:900px){
+    .topbar{
+      align-items:flex-start;
+      justify-content:center;
+      flex-direction:column;
+      gap:1px;
+      min-height:58px;
+      flex-basis:58px;
+      padding:7px 10px;
+    }
+    .top-actions{
+      width:100%;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .meta{
+      white-space:normal;
+      font-size:11px;
+    }
+    .stage{
+      flex-direction:column;
+      gap:8px;
+      padding:8px;
+    }
+    .video-grid{
+      flex:1 1 58%;
+      gap:8px;
+    }
+    .metrics{
+      flex:1 1 42%;
+      width:100%;
+    }
+    .transport{
+      grid-template-columns:auto auto 1fr;
+      flex-basis:98px;
+      min-height:98px;
+      margin:0 8px 8px;
+    }
+    .scrub,
+    .time,
+    .speed{grid-column:1 / -1}
+    .time{text-align:left}
+  }
+  @media (max-width:620px){
+    .video-grid{
+      grid-template-columns:minmax(0, 1fr);
+      grid-template-rows:repeat(4, minmax(0, 1fr));
+    }
+    .panel-head{
+      flex-basis:30px;
+      min-height:30px;
+    }
+    .model{font-size:12px}
+  }
+</style>
+</head>
+<body>
+<h2 class="sr-only">Four synchronized 30-second hand-pose overlay videos with measurements for coverage, accuracy, and jitter.</h2>
+
+<div class="app">
+  <header class="topbar">
+    <div class="title">Hand-Pose Models - 4-up</div>
+    <div class="top-actions">
+      <div class="meta">clip 695026376e - 30s (frames 350-1249)</div>
+      <a class="report-link" href="report.html">Report -&gt;</a>
+    </div>
+  </header>
+
+  <main class="stage">
+    <section class="video-grid" aria-label="Synchronized model overlays">
+      <article class="panel" style="--swatch:var(--mediapipe)">
+        <div class="panel-head">
+          <div class="model"><span class="swatch"></span><span class="model-name">MediaPipe</span><span class="role-chip">OURS - BASELINE</span></div>
+          <div class="stat">cov 55/38</div>
+        </div>
+        <div class="video-wrap">
+          <video muted playsinline preload="auto" src="mediapipe.mp4"></video>
+        </div>
+      </article>
+
+      <article class="panel" style="--swatch:var(--hybrid)">
+        <div class="panel-head">
+          <div class="model"><span class="swatch"></span><span class="model-name">WiLoR-hybrid</span><span class="role-chip brand">OURS - MAX COVERAGE</span></div>
+          <div class="stat">cov 82/75</div>
+        </div>
+        <div class="video-wrap">
+          <video muted playsinline preload="auto" src="hybrid.mp4"></video>
+        </div>
+      </article>
+
+      <article class="panel" style="--swatch:var(--mano)">
+        <div class="panel-head">
+          <div class="model"><span class="swatch"></span><span class="model-name">WiLoR-MANO</span><span class="role-chip endorsed">OURS - ENDORSED</span></div>
+          <div class="stat">cov 72/50</div>
+        </div>
+        <div class="video-wrap">
+          <video muted playsinline preload="auto" src="mano.mp4"></video>
+        </div>
+      </article>
+
+      <article class="panel" style="--swatch:var(--somastacks)">
+        <div class="panel-head">
+          <div class="model"><span class="swatch"></span><span class="model-name">SomaStacks</span><span class="role-chip amber">VENDOR - PAID</span></div>
+          <div class="stat">cov 73/62</div>
+        </div>
+        <div class="video-wrap">
+          <video muted playsinline preload="auto" src="somastacks.mp4"></video>
+        </div>
+      </article>
+    </section>
+
+    <aside class="metrics" aria-label="Measurements">
+      <div class="metrics-inner">
+        <h2 class="metrics-title">Measurements</h2>
+        <p class="role-legend">OURS = internal pipelines - VENDOR = paid SomaStacks delivery - ENDORSED = recommended stack</p>
+
+        <section class="metric-block">
+          <div class="metric-head">
+            <h3>Coverage - 30s window</h3>
+          </div>
+          <p class="note">share of frames a hand is tracked; higher is not the same as better landmarks</p>
+          <table>
+            <thead>
+              <tr><th>model</th><th>any</th><th>both</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="model-cell"><span class="swatch" style="--swatch:var(--mediapipe)"></span><span>MediaPipe</span></span></td>
+                <td class="value">55%</td>
+                <td class="value">38%</td>
+              </tr>
+              <tr>
+                <td><span class="model-cell"><span class="swatch" style="--swatch:var(--hybrid)"></span><span>WiLoR-hybrid</span></span></td>
+                <td class="value">82%</td>
+                <td class="value">75%</td>
+              </tr>
+              <tr>
+                <td><span class="model-cell"><span class="swatch" style="--swatch:var(--mano)"></span><span>WiLoR-MANO</span></span></td>
+                <td class="value">72%</td>
+                <td class="value">50%</td>
+              </tr>
+              <tr>
+                <td><span class="model-cell"><span class="swatch" style="--swatch:var(--somastacks)"></span><span>SomaStacks</span></span></td>
+                <td class="value">73%</td>
+                <td class="value">62%</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="metric-block">
+          <div class="metric-head">
+            <h3>Accuracy vs GT - Noitom</h3>
+          </div>
+          <p class="note">2D px err vs on-device GT; lower median is better; SomaStacks n/a</p>
+          <table>
+            <thead>
+              <tr><th>model</th><th>med px</th><th>PCK@0.2</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="model-cell"><span class="swatch" style="--swatch:var(--mediapipe)"></span><span>MediaPipe</span></span></td>
+                <td class="value">30.1</td>
+                <td class="value">52%</td>
+              </tr>
+              <tr>
+                <td><span class="model-cell"><span class="swatch" style="--swatch:var(--hybrid)"></span><span>WiLoR-hybrid</span></span></td>
+                <td class="value">29.0</td>
+                <td class="value">49%</td>
+              </tr>
+              <tr>
+                <td><span class="model-cell"><span class="swatch" style="--swatch:var(--mano)"></span><span>WiLoR-MANO</span></span></td>
+                <td class="value">28.2</td>
+                <td class="value">47%</td>
+              </tr>
+              <tr>
+                <td><span class="model-cell"><span class="swatch" style="--swatch:var(--somastacks)"></span><span>SomaStacks</span></span></td>
+                <td class="value">n/a</td>
+                <td class="value">n/a</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="metric-block">
+          <div class="metric-head">
+            <h3>Temporal jitter</h3>
+          </div>
+          <p class="note">on-screen high-frequency noise in px; lower is steadier</p>
+          <table>
+            <thead>
+              <tr><th>model</th><th>jitter</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="model-cell"><span class="swatch" style="--swatch:var(--mediapipe)"></span><span>MediaPipe</span></span></td>
+                <td class="value">2.1px</td>
+              </tr>
+              <tr>
+                <td><span class="model-cell"><span class="swatch" style="--swatch:var(--hybrid)"></span><span>WiLoR-hybrid</span></span></td>
+                <td class="value">1.8px</td>
+              </tr>
+              <tr>
+                <td><span class="model-cell"><span class="swatch" style="--swatch:var(--mano)"></span><span>WiLoR-MANO</span></span></td>
+                <td class="value">3.4px</td>
+              </tr>
+              <tr>
+                <td><span class="model-cell"><span class="swatch" style="--swatch:var(--somastacks)"></span><span>SomaStacks</span></span></td>
+                <td class="value">3.1px</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <ul class="read" aria-label="Read">
+          <li>Coverage and low jitter can hide bad landmarks when smoothing carries misplaced points.</li>
+          <li>Hybrid finds the most hands; WiLoR-MANO is the endorsed quality target.</li>
+          <li>SomaStacks has no independent Noitom-GT score for this comparison.</li>
+        </ul>
+      </div>
+    </aside>
+  </main>
+
+  <section class="transport" aria-label="Playback controls">
+    <button class="btn play-toggle" id="play" type="button">Play</button>
+    <button class="btn" id="restart" type="button">Restart</button>
+    <div class="scrub">
+      <div class="seek-fill" id="seekFill"></div>
+      <input class="seek" id="seek" type="range" min="0" max="1000" value="0" aria-label="Scrub videos">
+    </div>
+    <div class="time" id="time">0.0s / 30.0s</div>
+    <div class="speed" aria-label="Playback speed">
+      <button type="button" data-rate="0.5">0.5x</button>
+      <button type="button" class="active" data-rate="1">1x</button>
+      <button type="button" data-rate="2">2x</button>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const videos = [...document.querySelectorAll("video")];
+  const play = document.getElementById("play");
+  const restart = document.getElementById("restart");
+  const seek = document.getElementById("seek");
+  const seekFill = document.getElementById("seekFill");
+  const time = document.getElementById("time");
+  const speedButtons = [...document.querySelectorAll(".speed button")];
+  const fmt = value => `${value.toFixed(1)}s`;
+
+  let duration = 30.0;
+  let seeking = false;
+
+  const leader = () => videos[0];
+  const isPlaying = () => videos.some(video => !video.paused);
+  const updateUI = () => {
+    const now = leader().currentTime || 0;
+    const pct = duration ? Math.min(100, (now / duration) * 100) : 0;
+    seek.value = Math.round((pct / 100) * 1000);
+    seekFill.style.width = `${pct}%`;
+    time.textContent = `${fmt(now)} / ${fmt(duration)}`;
+  };
+  const syncDuration = () => {
+    const known = videos.map(video => video.duration).filter(Number.isFinite);
+    duration = known.length ? Math.max(...known) : duration;
+    updateUI();
+  };
+  const setTime = value => {
+    videos.forEach(video => {
+      const max = Number.isFinite(video.duration) ? video.duration : duration;
+      video.currentTime = Math.min(value, max);
+    });
+    updateUI();
+  };
+  const pauseAll = () => {
+    videos.forEach(video => video.pause());
+    play.textContent = "Play";
+  };
+  const playAll = async () => {
+    const target = leader().currentTime || 0;
+    videos.forEach(video => {
+      if (Math.abs((video.currentTime || 0) - target) > 0.08) video.currentTime = target;
+    });
+    try {
+      await Promise.all(videos.map(video => video.play()));
+      play.textContent = "Pause";
+    } catch {
+      pauseAll();
+    }
+  };
+
+  videos.forEach(video => {
+    video.loop = false;
+    video.playbackRate = 1;
+    video.addEventListener("loadedmetadata", syncDuration);
+    video.addEventListener("durationchange", syncDuration);
+    video.addEventListener("play", () => {
+      const target = leader().currentTime || 0;
+      videos.forEach(item => {
+        if (item !== video && Math.abs((item.currentTime || 0) - target) > 0.08) {
+          item.currentTime = target;
+        }
+      });
+    });
+  });
+
+  leader().addEventListener("timeupdate", () => {
+    if (!seeking) updateUI();
+  });
+  leader().addEventListener("ended", () => {
+    setTime(0);
+    playAll();
+  });
+
+  play.addEventListener("click", () => {
+    if (isPlaying()) pauseAll();
+    else playAll();
+  });
+  restart.addEventListener("click", () => {
+    const wasPlaying = isPlaying();
+    setTime(0);
+    if (wasPlaying) playAll();
+  });
+  seek.addEventListener("input", () => {
+    seeking = true;
+    const pct = Number(seek.value) / 1000;
+    seekFill.style.width = `${pct * 100}%`;
+    time.textContent = `${fmt(pct * duration)} / ${fmt(duration)}`;
+  });
+  seek.addEventListener("change", () => {
+    setTime((Number(seek.value) / 1000) * duration);
+    seeking = false;
+    if (isPlaying()) playAll();
+  });
+  speedButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      const rate = Number(button.dataset.rate);
+      videos.forEach(video => { video.playbackRate = rate; });
+      speedButtons.forEach(item => item.classList.toggle("active", item === button));
+    });
+  });
+
+  updateUI();
+})();
+</script>
+</body>
+</html>
